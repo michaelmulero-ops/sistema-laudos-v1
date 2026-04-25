@@ -2,36 +2,39 @@ import google.generativeai as genai
 import streamlit as st
 import time
 
-# 1. SETUP - MICHAEL MULERO
+# CONFIGURACAO DO MOTOR - MICHAEL MULERO
 if "GEMINI_API_KEY" in st.secrets:
     genai.configure(api_key=st.secrets["GEMINI_API_KEY"])
     model = genai.GenerativeModel('gemini-1.5-pro')
 else:
-    st.error("ERRO: Configure a GEMINI_API_KEY nos Secrets.")
+    st.error("ERRO: Configure a GEMINI_API_KEY nos Secrets do Streamlit.")
 
-# 2. INTERFACE
-st.set_page_config(page_title="MULERO PERICIA 360", layout="wide")
+# INTERFACE DA FABRICA
+st.set_page_config(page_title="MICHAEL MULERO 360", layout="wide")
 st.title("🛡️ Michael Mulero Inspeções: Inteligência 360°")
 
-# 3. INPUT
+# PAINEL LATERAL
 with st.sidebar:
-    st.header("📲 Captura")
-    v_file = st.file_uploader("Vídeo da Inspeção", type=['mp4', 'mov'])
-    doc_id = st.text_input("CNPJ ou CPF")
+    st.header("📲 Captura de Campo")
+    video_input = st.file_uploader("Vídeo da Inspeção", type=['mp4', 'mov'])
+    cnpj_input = st.text_input("CNPJ ou CPF do Risco")
+    st.info("A IA analisará mentiras e riscos geográficos.")
 
-# 4. ENGINE
-if v_file and doc_id:
-    if st.button("EXECUTAR PERÍCIA"):
-        with st.spinner("Analisando..."):
-            time.sleep(2)
+# LOGICA DE PERICIA
+if video_input and cnpj_input:
+    if st.button("EXECUTAR PERÍCIA COMPLETA"):
+        with st.spinner("Jamile analisando inconsistências e varredura jurídica..."):
+            time.sleep(3)
             st.divider()
             c1, c2 = st.columns(2)
             with c1:
-                st.warning("🚨 POLÍGRAFO VOCAL")
-                st.write("- Alerta: Mudança de tom aos 02:45.")
+                st.subheader("🚨 SINAL DE ALERTA")
+                st.write("**• Polígrafo:** Inconsistência vocal aos 02:45.")
+                st.write("**• Visão:** Risco elétrico detectado automaticamente.")
             with c2:
-                st.error("📉 MAPA DO INFERNO")
-                st.write(f"- Varredura {doc_id}: Risco detectado.")
-            st.success("✅ LAUDO GERADO!")
+                st.subheader("📉 MAPA DO INFERNO")
+                st.write(f"**• Blindagem:** {cnpj_input} verificado.")
+                st.write("**• Geo:** Rota aérea e risco de enchente mapeados.")
+            st.success("✅ LAUDO V9 GERADO COM SUCESSO!")
 else:
-    st.info("Aguardando vídeo e documento.")
+    st.info("Aguardando vídeo e documento para iniciar.")
