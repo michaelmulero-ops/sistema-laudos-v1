@@ -3,54 +3,39 @@ import streamlit as st
 from PIL import Image
 import io
 
-# --- MOTOR DE ALTA PERFORMANCE ---
-CHAVE_MESTRA = "AIzaSyCciPFWs78Ua_NixBYXANA4N6YP0cIj_4Y"
+# CHAVE DIRETA PARA NAO DAR ERRO
+CHAVE = "AIzaSyCciPFWs78Ua_NixBYXANA4N6YP0cIj_4Y"
 
 try:
-    genai.configure(api_key=CHAVE_MESTRA)
+    genai.configure(api_key=CHAVE)
     model = genai.GenerativeModel('gemini-1.5-pro')
-except Exception as e:
-    st.error(f"Erro na ignição: {e}")
+except:
+    st.error("Erro na Jane")
 
-# --- INTERFACE ---
-st.set_page_config(page_title="MULERO ULTRA V19", layout="wide")
-st.title("🛡️ Michael Mulero: Perícia Visual Ultra")
+st.set_page_config(page_title="MULERO V20", layout="wide")
+st.title("🛡️ Michael Mulero: Perícia 360°")
 
-with st.sidebar:
-    st.header("📸 Central de Laudos")
-    # Reduzi o limite visual para voce saber que estamos otimizando
-    arquivos = st.file_uploader("Suba suas fotos aqui", type=['jpg', 'png', 'jpeg'], accept_multiple_files=True)
-    doc_id = st.text_input("CNPJ/CPF")
+# AQUI ESTÁ O SEGREDO: Limitar o tamanho do arquivo no código
+arquivo = st.file_uploader("Suba UMA foto por vez (Teste)", type=['jpg', 'jpeg', 'png'])
 
-# --- LÓGICA DE COMPRESSÃO RADICAL ---
-if arquivos and doc_id:
-    if st.button("GERAR LAUDO AGORA"):
-        with st.spinner("Jane triturando o peso e analisando..."):
-            
-            fotos_leves = []
-            
-            for arq in arquivos:
-                img = Image.open(arq)
-                
-                # Redimensionamento agressivo para passar em qualquer servidor
-                img.thumbnail((600, 600)) 
-                
-                # Converte para JPEG super leve
-                buffer = io.BytesIO()
-                img.save(buffer, format="JPEG", quality=50) # Qualidade 50% ja basta para a IA ver o erro
-                img_final = Image.open(buffer)
-                
-                fotos_leves.append(img_final)
-
-            prompt = f"Perícia rápida Michael Mulero (Risco {doc_id}). Liste os 3 riscos críticos nestas fotos."
-            
-            try:
-                res = model.generate_content([prompt] + fotos_leves)
-                st.divider()
-                st.warning("🚨 ANÁLISE TÉCNICA FINAL")
-                st.markdown(res.text)
-                st.success("✅ Sistema rodou limpo!")
-            except Exception as e:
-                st.error(f"Erro na análise: {e}")
+if arquivo:
+    if st.button("ANALISAR AGORA"):
+        img = Image.open(arquivo)
+        
+        # Reduzindo a foto drasticamente para 400 pixels (Super Leve)
+        img.thumbnail((400, 400))
+        
+        buffer = io.BytesIO()
+        img.save(buffer, format="JPEG", quality=30) # Qualidade baixa só para teste
+        img_final = Image.open(buffer)
+        
+        st.image(img_final, caption="Foto Otimizada")
+        
+        try:
+            res = model.generate_content(["O que tem de errado nessa fiação?", img_final])
+            st.warning("🚨 RESULTADO DA PERÍCIA")
+            st.write(res.text)
+        except Exception as e:
+            st.error(f"O servidor ainda barrou: {e}")
 else:
     st.info("Aguardando evidências.")
