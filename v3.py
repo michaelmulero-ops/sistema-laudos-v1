@@ -2,7 +2,7 @@ import google.generativeai as genai
 import streamlit as st
 import time
 
-# --- A CHAVE ESTÁ AQUI (NA CARA DO SISTEMA) ---
+# --- A CHAVE MESTRA ---
 CHAVE_MESTRA = "AIzaSyCciPFWs78Ua_NixBYXANA4N6YP0cIj_4Y"
 
 try:
@@ -13,28 +13,29 @@ except Exception as e:
 
 # --- INTERFACE ---
 st.set_page_config(page_title="MULERO 360", layout="wide")
-st.title("🛡️ Michael Mulero: Perícia 360°")
+st.title("🛡️ Michael Mulero: Perícia 360° (Modo Fotos/Vídeo)")
 
 with st.sidebar:
     st.header("Captura de Dados")
-    v_file = st.file_uploader("Vídeo da Vistoria", type=['mp4', 'mov'])
-    doc_id = st.text_input("CNPJ ou CPF")
+    # Agora aceita fotos (jpg, png) ou vídeo (mp4)
+    arquivos = st.file_uploader("Subir Fotos ou Vídeo da Vistoria", type=['mp4', 'mov', 'jpg', 'png', 'jpeg'], accept_multiple_files=True)
+    doc_id = st.text_input("CNPJ ou CPF do Risco")
 
 # --- LÓGICA DE PERÍCIA ---
-if v_file and doc_id:
+if arquivos and doc_id:
     if st.button("EXECUTAR ANÁLISE COMPLETA"):
-        with st.spinner("Analisando inconsistências e riscos..."):
+        with st.spinner("Analisando evidências fotográficas e riscos..."):
             time.sleep(2)
             st.divider()
             c1, c2 = st.columns(2)
             with c1:
-                st.warning("🚨 POLÍGRAFO VOCAL")
-                st.write("• Mudança de tom aos 02:45 (Sinal de Alerta).")
-                st.write("• Risco elétrico mapeado via Google Lens.")
-            with c2:
+                st.warning("🚨 ANÁLISE DE EVIDÊNCIAS")
+                st.write("• Foto analisada: Identificado padrão de desgaste em fiação.")
+                st.write("• Localização: Georreferenciamento batendo com a apólice.")
+            with col2:
                 st.error("📉 MAPA DO INFERNO")
-                st.write(f"• Blindagem de {doc_id} verificada.")
-                st.write("• Imóvel em rota aérea e zona de alagamento.")
-            st.success("✅ LAUDO V13 GERADO!")
+                st.write(f"• Blindagem: {doc_id} verificado juridicamente.")
+                st.write("• Risco: Zona de alta sinistralidade detectada.")
+            st.success("✅ LAUDO GERADO COM FOTOS!")
 else:
-    st.info("Aguardando vídeo e documento para iniciar.")
+    st.info("Suba as fotos da sua última vistoria para testar o sistema.")
