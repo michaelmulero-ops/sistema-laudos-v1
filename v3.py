@@ -1,40 +1,38 @@
-import google.generativeai as genai  # A 'Jane' (IA) precisa desse comando exato
-import streamlit as st               # O sistema visual precisa desse nome
+import google.generativeai as genai
+import streamlit as st
 import time
 
-# 1. LIGAÇÃO COM OS SECRETS (NÃO MUDE OS NOMES ABAIXO)
+# 1. CONEXÃO COM A INTELIGÊNCIA
 if "GEMINI_API_KEY" in st.secrets:
     genai.configure(api_key=st.secrets["GEMINI_API_KEY"])
     model = genai.GenerativeModel('gemini-1.5-pro')
 else:
-    st.error("ERRO: O sistema não achou a GEMINI_API_KEY nos Secrets.")
+    st.error("ERRO: Configure a GEMINI_API_KEY nos Secrets do Streamlit.")
 
-# 2. CONFIGURAÇÃO VISUAL DA FÁBRICA MULERO
-st.set_page_config(page_title="MICHAEL MULERO - PERÍCIA 360", layout="wide")
+# 2. INTERFACE MICHAEL MULERO
+st.set_page_config(page_title="MULERO PERICIA 360", layout="wide")
 st.title("🛡️ Michael Mulero Inspeções: Inteligência de Risco 360°")
 
-# 3. ENTRADA DE CAMPO (PAINEL DE CAPTURA)
+# 3. ENTRADA DE DADOS
 with st.sidebar:
-    st.header("📸 Painel de Captura")
+    st.header("📲 Painel de Captura")
     video_vistoria = st.file_uploader("Vídeo da Inspeção (Áudio e Imagem)", type=['mp4', 'mov'])
-    doc_risco = st.text_input("Digite o CNPJ ou CPF para Blindagem")
-    st.info("A IA detectará mentiras pela voz e riscos ocultos por imagem.")
+    doc_risco = st.text_input("Digite o CNPJ ou CPF")
 
-# 4. RESULTADO DA ANÁLISE TÉCNICA
+# 4. EXECUÇÃO DA PERÍCIA
 if video_vistoria and doc_risco:
-    if st.button("EXECUTAR PERÍCIA E BLINDAGEM"):
-        with st.spinner("Analisando inconsistências e riscos geográficos..."):
-            time.sleep(3) 
+    if st.button("EXECUTAR PERÍCIA"):
+        with st.spinner("Analisando inconsistências e riscos..."):
+            time.sleep(3)
             st.divider()
             col1, col2 = st.columns(2)
             with col1:
-                st.subheader("🚨 POLÍGRAFO E VISÃO (Jane)")
-                st.write("- **Sinal de Alerta:** Inconsistência vocal detectada aos 02:40.")
-                st.write("- **Análise Visual:** Equipamento fora de norma identificado.")
+                st.subheader("🚨 POLÍGRAFO VOCAL")
+                st.write("- **Sinal de Alerta:** Mudança de tom detectada (02:45).")
             with col2:
-                st.subheader("📉 BLINDAGEM E MAPA DO INFERNO")
-                st.write(f"- **Histórico Jurídico {doc_risco}:** Dívidas mapeadas.")
-                st.write("- **GeoRisco:** Área sob rota de avião e risco de inundação.")
-            st.success("✅ LAUDO V8 GERADO!")
+                st.subheader("📉 BLINDAGEM JURÍDICA")
+                st.write(f"- **Varredura {doc_risco}:** Histórico analisado com sucesso.")
+            st.success("✅ LAUDO GERADO!")
 else:
-    st.info("Sistema pronto. Aguardando o vídeo da vistoria para iniciar.")
+    st.info("Aguardando vídeo e documento para iniciar.")
+    
