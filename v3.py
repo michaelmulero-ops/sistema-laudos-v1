@@ -1,3 +1,4 @@
+GEMINI_API_KEY
 import streamlit as st
 import google.generativeai as genai
 from datetime import datetime
