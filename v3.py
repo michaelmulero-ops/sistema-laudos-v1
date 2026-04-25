@@ -13,39 +13,44 @@ except Exception as e:
     st.error(f"Erro na ignição: {e}")
 
 # --- INTERFACE ---
-st.set_page_config(page_title="MULERO ULTRA V18", layout="wide")
+st.set_page_config(page_title="MULERO ULTRA V19", layout="wide")
 st.title("🛡️ Michael Mulero: Perícia Visual Ultra")
 
 with st.sidebar:
     st.header("📸 Central de Laudos")
-    arquivos = st.file_uploader("Fotos (Limite de 10MB total)", type=['jpg', 'png', 'jpeg'], accept_multiple_files=True)
+    # Reduzi o limite visual para voce saber que estamos otimizando
+    arquivos = st.file_uploader("Suba suas fotos aqui", type=['jpg', 'png', 'jpeg'], accept_multiple_files=True)
     doc_id = st.text_input("CNPJ/CPF")
 
-# --- LÓGICA DE COMPRESSÃO E ANÁLISE ---
+# --- LÓGICA DE COMPRESSÃO RADICAL ---
 if arquivos and doc_id:
     if st.button("GERAR LAUDO AGORA"):
-        with st.spinner("Jane comprimindo e analisando as evidências..."):
+        with st.spinner("Jane triturando o peso e analisando..."):
             
             fotos_leves = []
-            cols = st.columns(min(len(arquivos), 4))
             
-            for i, arq in enumerate(arquivos):
-                # Redimensionando a foto para não dar o erro 413
+            for arq in arquivos:
                 img = Image.open(arq)
-                img.thumbnail((800, 800)) # Deixa a foto leve mas nítida
-                cols[i % 4].image(img, use_container_width=True)
-                fotos_leves.append(img)
+                
+                # Redimensionamento agressivo para passar em qualquer servidor
+                img.thumbnail((600, 600)) 
+                
+                # Converte para JPEG super leve
+                buffer = io.BytesIO()
+                img.save(buffer, format="JPEG", quality=50) # Qualidade 50% ja basta para a IA ver o erro
+                img_final = Image.open(buffer)
+                
+                fotos_leves.append(img_final)
 
-            prompt = f"Perícia rápida Michael Mulero (Risco {doc_id}). Liste os 3 riscos críticos de incêndio/pane elétrica nessas fotos."
+            prompt = f"Perícia rápida Michael Mulero (Risco {doc_id}). Liste os 3 riscos críticos nestas fotos."
             
             try:
-                # Envia as fotos já "encolhidas" para a IA
                 res = model.generate_content([prompt] + fotos_leves)
                 st.divider()
-                st.warning("🚨 ANÁLISE TÉCNICA")
+                st.warning("🚨 ANÁLISE TÉCNICA FINAL")
                 st.markdown(res.text)
-                st.success("✅ Laudo gerado sem erros de servidor!")
+                st.success("✅ Sistema rodou limpo!")
             except Exception as e:
-                st.error(f"Erro na Jane: {e}")
+                st.error(f"Erro na análise: {e}")
 else:
-    st.info("Suba as fotos para testar o sistema otimizado.")
+    st.info("Aguardando evidências.")
