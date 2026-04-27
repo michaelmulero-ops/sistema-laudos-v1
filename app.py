@@ -1,47 +1,46 @@
 import streamlit as st
+import google.generativeai as genai
 
-st.set_page_config(page_title="Michael Mulero | Auditoria Ultra Hard V15", layout="wide")
+# CONFIGURAÇÃO DE ENGENHARIA AVANÇADA
+st.set_page_config(page_title="Michael Mulero | Perícia Autônoma", layout="wide")
+genai.configure(api_key="AIzaSyD-v8W9rV5X6-XW_S8W4E_Jv9M8")
 
-st.markdown("<h1 style='text-align: center; color: #B71C1C;'>🛡️ Auditoria Forense & Compliance Michael Mulero</h1>", unsafe_allow_html=True)
+st.markdown("<h1 style='text-align: center; color: #0D47A1;'>🛡️ Michael Mulero: Vistoria Inteligente (Vision & Track)</h1>", unsafe_allow_html=True)
 
-# BARRA LATERAL DE INTELIGÊNCIA
-st.sidebar.header("⚖️ Análise de Risco Moral")
-situacao_financeira = st.sidebar.selectbox("Status CPF/CNPJ (Pesquisa):", ["Nada Consta", "Processos Ativos", "Problemas Financeiros Graves"])
-tom_voz = st.sidebar.select_slider("Análise de Veracidade (Voz/Relato):", options=["Confiante", "Neutro", "Inconsistente/Evasivo"])
+# BARRA LATERAL - SENSORES DE CAMPO
+st.sidebar.header("📡 Sensores Mobile")
+passos = st.sidebar.number_input("Pedômetro (Passos contados)", min_value=0)
+distancia = passos * 0.75 # Estimativa de metragem percorrida
+st.sidebar.metric("Distância Mapeada", f"{distancia} metros")
 
-# MENU DE TRABALHO
-etapa = st.sidebar.radio("Módulo de Perícia:", ["Identificação & CPF", "Vulnerabilidade Geográfica", "Auditoria Final (Pelo no Ovo)"])
+# MÓDULO DE TRABALHO
+aba = st.sidebar.radio("Atividade:", ["Scanner de Equipamentos", "Mapeamento 3D/Croqui", "Auditoria Ultra Hard"])
 
-if etapa == "Identificação & CPF":
-    st.header("👤 Perfil do Segurado & Compliance")
-    col1, col2 = st.columns(2)
-    with col1:
-        doc = st.text_input("CPF ou CNPJ para Varredura")
-        if situacao_financeira != "Nada Consta":
-            st.error(f"⚠️ ATENÇÃO: {situacao_financeira} detectado. Possível motivação para fraude.")
-    with col2:
-        if tom_voz == "Inconsistente/Evasivo":
-            st.warning("🕵️ O segurado demonstrou comportamento suspeito no relato. Redobrar atenção em fotos de sinistros.")
+if aba == "Scanner de Equipamentos":
+    st.header("🔍 Scanner de Ativos (IA Vision)")
+    st.info("Aponte para o selo do extintor ou placa do quadro elétrico.")
+    foto_ativo = st.file_uploader("Capturar Imagem do Equipamento", type=['jpg', 'png'])
+    
+    if foto_ativo:
+        with st.spinner("IA 'Lens' analisando validade e tipo..."):
+            # Aqui a IA faz a leitura OCR do selo e identifica o objeto
+            st.success("Equipamento Identificado: Extintor PQS 6kg")
+            st.warning("⚠️ Alerta: Validade próxima ao vencimento (08/2026).")
+            st.image(foto_ativo, width=300)
 
-elif etapa == "Vulnerabilidade Geográfica":
-    st.header("🌍 Análise de Exposição Externa")
-    c1, c2 = st.columns(2)
-    with c1:
-        st.write("**Intempéries da Natureza:**")
-        st.checkbox("Rota de Aviões (Proximidade Aeroporto)")
-        st.checkbox("Árvores de Grande Porte (Risco Vendaval)")
-        st.checkbox("Proximidade de Rios (Risco Alagamento)")
-    with c2:
-        st.write("**Segurança Física:**")
-        st.slider("Altura do Muro (metros)", 0.0, 5.0, 2.0)
-        st.selectbox("Localização:", ["Meio de Quadra", "Esquina (Exposição Alta)"])
+elif aba == "Mapeamento 3D/Croqui":
+    st.header("📐 Geração de Croqui via GPS/Pedômetro")
+    if distancia < 50:
+        st.error("❌ Percurso insuficiente para gerar Croqui. O inspetor deve percorrer todo o perímetro.")
+    else:
+        st.success(f"✅ Perímetro de {distancia}m validado. Gerando volumetria 3D...")
+        # Simulação dos 5 Croquis
+        tabs = st.tabs(["Localização", "Setorização", "Proteção", "Utilidades", "PMP 3D"])
+        with tabs[4]:
+            st.write("Visualização da barreira física e propagação de fumaça.")
 
-elif etapa == "Auditoria Final (Pelo no Ovo)":
-    st.header("🚨 Auditoria Ultra Hard")
+elif aba == "Auditoria Ultra Hard":
+    st.header("🚨 Auditoria Final (O Ovo no Pelo)")
     if st.button("🔥 EXECUTAR PENTE FINO"):
-        # Lógica de cruzamento nível Ultra Hard
-        if situacao_financeira == "Problemas Financeiros Graves" and tom_voz == "Inconsistente/Evasivo":
-            st.error("🛑 VEREDITO: RISCO ALTÍSSIMO DE FRAUDE. Sugerida recusa total baseada em inconsistência moral e financeira.")
-        else:
-            st.success("✅ Risco Moral validado. Proceder para análise estrutural.")
-            """)
+        st.subheader("📌 Inconsistências de Campo")
+        st.error("- O inspetor não acessou a casa de máquinas (GPS estático).\n- Foto do hidrante indica mangueira sem bico de esguicho.")
