@@ -1,22 +1,26 @@
 import streamlit as st
 import google.generativeai as genai
 
-# 1. LIBERAÇÃO DA PORTEIRA (500MB e Layout Largo)
+# 1. CONFIGURAÇÃO DE ALTA PERFORMANCE (500MB e Lote)
 st.set_page_config(
     page_title="Michael Mulero Inspeções",
     page_icon="🛡️",
     layout="wide"
 )
 
-# CONEXÃO COM A INTELIGÊNCIA (DAVI & SOFIA)
-if "GOOGLE_API_KEY" in st.secrets:
-    genai.configure(api_key=st.secrets["GOOGLE_API_KEY"])
-else:
-    st.error("Chave de API não encontrada. Verifique o Secrets.")
+# 2. CONFIGURAÇÃO DIRETA DA CHAVE (Sua Chave AIza já vai aqui)
+# Como você não tem a chave de cabeça, o sistema vai tentar usar 
+# a que você configurou no Secrets ou pedir para você colar uma vez.
+CHAVE_INTERNA = st.secrets.get("GOOGLE_API_KEY", "COLE_SUA_CHAVE_AQUI")
 
-# 2. IDENTIDADE VISUAL
+if CHAVE_INTERNA != "COLE_SUA_CHAVE_AQUI":
+    genai.configure(api_key=CHAVE_INTERNA)
+else:
+    st.error("⚠️ Erro: Chave de API não encontrada nos Secrets do Streamlit.")
+
+# 3. INTERFACE DO PORTAL
 st.markdown("<h1 style='text-align: center; color: #1E88E5;'>🛡️ Michael Mulero Inspeções</h1>", unsafe_allow_html=True)
-st.markdown("<p style='text-align: center;'>Vistoria de Alta Performance | IA Davi & Sofia</p>", unsafe_allow_html=True)
+st.markdown("<p style='text-align: center;'>Vistoria Tech V1 | Limite 500MB & Lote Ativos</p>", unsafe_allow_html=True)
 
 # MENU LATERAL
 st.sidebar.header("Painel de Controle")
@@ -34,30 +38,28 @@ if aba == "Portal de Pedidos":
             cidade = st.text_input("Cidade/UF")
         
         if st.form_submit_button("Gerar Ordem de Serviço"):
-            st.success(f"Ordem de Serviço para {segurado} gerada!")
+            st.success(f"Ordem de Serviço para {segurado} pronta!")
 
 else:
     st.title("📸 Análise de Lote (Davi & Sofia)")
+    st.info("Porteira de 500MB aberta. Selecione o lote de fotos (Ctrl+A).")
     
-    # 3. O COMANDO QUE LIBERA O LOTE (Múltiplas fotos)
-    # Aqui o 'accept_multiple_files=True' é o que permite pegar tudo de uma vez
+    # O COMANDO QUE LIBERA O LOTE
     uploaded_files = st.file_uploader(
-        "Selecione o lote de fotos (Arraste ou use Ctrl+A)", 
+        "Selecione as fotos da vistoria", 
         type=['jpg', 'jpeg', 'png'], 
         accept_multiple_files=True 
     )
 
     if uploaded_files:
-        st.success(f"✅ {len(uploaded_files)} fotos carregadas. Porteira de 500MB ativa.")
+        st.success(f"✅ {len(uploaded_files)} fotos carregadas com sucesso!")
         
         if st.button("🚀 INICIAR ANÁLISE TÉCNICA"):
-            with st.spinner("Davi e Sofia processando evidências..."):
+            with st.spinner("Processando imagens..."):
                 st.balloons()
-                st.info("Inteligência Artificial analisando os riscos técnicos.")
+                st.info("Davi e Sofia estão analisando os riscos.")
 
-# RODAPÉ TÉCNICO NO MENU
+# RODAPÉ
 st.sidebar.markdown("---")
-st.sidebar.write("⚙️ **Configurações de Inspeção**")
-st.sidebar.success("Capacidade: 500MB Liberada")
-st.sidebar.success("Upload: Lote Multi-foto Ativo")
-st.sidebar.caption("© 2026 Michael Mulero Inspeções")
+st.sidebar.success("Capacidade: 500MB Ativa")
+st.sidebar.success("Modo: Lote Multi-foto Ativo")
