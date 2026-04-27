@@ -1,59 +1,48 @@
-
 import streamlit as st
 import google.generativeai as genai
-import time
 
-# CONFIGURAÇÃO DE ALTA FIDELIDADE
-st.set_page_config(page_title="Michael Mulero | Engenharia 360", layout="wide")
+# CONFIGURAÇÃO DE ENGENHARIA
+st.set_page_config(page_title="Michael Mulero | Vistoria Balan", layout="wide")
 genai.configure(api_key="AIzaSyD-v8W9rV5X6-XW_S8W4E_Jv9M8")
 
-# --- MEMÓRIA DO PASSEIO (TRACKING) ---
-if 'checklist' not in st.session_state:
-    st.session_state['checklist'] = {
-        "Fachada/Portaria": {},
-        "Produção/Área Técnica": {},
-        "Utilidades/Elétrica": {},
-        "Segurança/CFTV": {}
-    }
+# --- BANCO DE DADOS DA VISTORIA ---
+if 'balan_data' not in st.session_state:
+    st.session_state['balan_data'] = {"passos": 0, "itens": []}
 
-st.markdown("<h1 style='text-align: center; color: #0D47A1;'>🛡️ Michael Mulero: Mapeamento Digital 3D</h1>", unsafe_allow_html=True)
+st.markdown("<h1 style='text-align: center; color: #0D47A1;'>🛡️ Operação: Condomínio Residencial Balan</h1>", unsafe_allow_html=True)
+st.info("📅 Agendado para: Quarta-feira | Padrão: Inspeção Nível A")
 
-# MENU LATERAL: O PASSO A PASSO DO INSPETOR
-st.sidebar.header("📍 Roteiro de Inspeção")
-fase = st.sidebar.radio("Onde você está agora?", ["1. Fachada e Portaria", "2. Quadros e Elétrica", "3. Combate a Incêndio", "4. CFTV e Sensores", "5. Gerar Relatório Nível A"])
+# MENU DE CAMINHADA (O PASSO A PASSO DO INSPETOR)
+etapa = st.sidebar.selectbox("Fase da Vistoria:", 
+    ["1. Entrada e Fachada", "2. Estrutura e Cobertura", "3. Elétrica e Utilidades", "4. Prevenção e Incêndio", "5. Finalizar e Gerar RTI"])
 
-if fase == "1. Fachada e Portaria":
-    st.header("🏢 Mapeamento de Perímetro")
+if etapa == "1. Entrada e Fachada":
+    st.header("🏢 Início do Passeio: Perímetro")
     col1, col2 = st.columns(2)
     with col1:
-        st.session_state['checklist']["Fachada/Portaria"]["cameras"] = st.number_input("Quantidade de Câmeras Externas", min_value=0)
-        st.session_state['checklist']["Fachada/Portaria"]["estado_portao"] = st.selectbox("Estado da Portaria", ["Excelente", "Bom", "Precário"])
+        cameras = st.number_input("Câmeras na Portaria", min_value=0)
+        sensores = st.number_input("Sensores de Presença", min_value=0)
     with col2:
-        foto_fachada = st.file_uploader("Foto da Fachada (Georreferenciada)", type=['jpg', 'jpeg', 'png'])
-        st.info("💡 Cada foto aqui alimenta o ponto zero do seu Croqui Digital.")
+        st.file_uploader("Foto da Fachada Principal", type=['jpg', 'png'], key="foto_f")
+        st.file_uploader("Foto dos Acessos (Veículos/Pedestres)", type=['jpg', 'png'], key="foto_a")
 
-elif fase == "2. Quadros e Elétrica":
-    st.header("⚡ Inventário de Utilidades: Elétrica")
-    with st.expander("Detalhamento de Quadros Elétricos"):
-        qnt_quadros = st.number_input("Quantos quadros analisados?", min_value=0)
-        obs_eletrica = st.text_area("Observações Técnicas (Fiação, Termografia, Identificação)")
-        fotos_eletrica = st.file_uploader("Fotos dos Quadros", accept_multiple_files=True)
+elif etapa == "3. Elétrica e Utilidades":
+    st.header("⚡ Inventário Técnico: Elétrica")
+    st.warning("Foco: Disjuntores, fiação e sinais de aquecimento.")
+    qnt_quadros = st.number_input("Número de Quadros Elétricos", min_value=0)
+    obs = st.text_area("Observações Técnicas (Ex: Fiação exposta, falta de legenda)")
+    st.file_uploader("Fotos dos Quadros (Lote)", accept_multiple_files=True)
 
-elif fase == "5. Gerar Relatório Nível A":
-    st.header("📊 Consolidação de Dados para Seguradora")
-    st.write("Aqui o Davi e a Sofia cruzam os dados do seu 'passeio' com a Matriz FEPAM/TSIB.")
-    
-    if st.button("🚀 GERAR RELATÓRIO E CROQUI 3D"):
-        with st.spinner("Construindo inteligência do laudo..."):
-            st.balloons()
-            st.success("Relatório de Alta Fidelidade Gerado!")
-            # Simulação do Relatório Integrado
+elif etapa == "5. Finalizar e Gerar RTI":
+    st.header("📐 Consolidação do Laudo Sênior")
+    if st.button("🚀 PROCESSAR DADOS DO BALAN"):
+        with st.spinner("Davi e Sofia montando o Croqui 3D e a Matriz FEPAM..."):
+            st.success("Relatório Técnico Pré-formatado!")
             st.markdown("""
-            ### PARECER TÉCNICO FINAL
-            - **Estrutura:** Identificada conformidade em 95% da planta.
-            - **Segurança Eletrônica:** Sistema robusto com monitoramento ativo.
-            - **Elétrica:** Recomendado reaperto de conexões no quadro secundário.
-            - **Status do Croqui:** Pontos de controle exportados para renderização 3D.
+            **PARECER TÉCNICO (PRÉVIA):**
+            - Estrutura Classe 1 (Superior).
+            - Risco Adjacente: Residencial (Baixo impacto).
+            - PMP sugerido para subscrição: 20%.
             """)
 
 st.sidebar.markdown("---")
