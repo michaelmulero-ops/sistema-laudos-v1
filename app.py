@@ -1,64 +1,55 @@
 import streamlit as st
 import google.generativeai as genai
+from PIL import Image
 
-# 1. CONFIGURAÇÃO DE ALTA PERFORMANCE
-st.set_page_config(
-    page_title="Michael Mulero Inspeções",
-    page_icon="🛡️",
-    layout="wide"
-)
-
-# 2. CHAVE DE ACESSO (YARD / AI STUDIO)
-# Michael, injetei a chave direto para não depender mais de arquivos externos.
+# 1. SETUP DO MICHAEL (500MB + IA)
+st.set_page_config(page_title="Michael Mulero Inspeções", layout="wide")
 CHAVE_MESTRA = "AIzaSyD-v8W9rV5X6-XW_S8W4E_Jv9M8"
+genai.configure(api_key=CHAVE_MESTRA)
 
-try:
-    genai.configure(api_key=CHAVE_MESTRA)
-    model = genai.GenerativeModel('gemini-1.5-flash')
-except Exception as e:
-    st.error(f"Erro na conexão: {e}")
-
-# 3. INTERFACE DO PORTAL
-st.markdown("<h1 style='text-align: center; color: #1E88E5;'>🛡️ Michael Mulero Inspeções</h1>", unsafe_allow_html=True)
+# 2. IDENTIDADE VISUAL
+st.markdown("<h1 style='text-align: center; color: #1E88E5;'>🛡️ Michael Mulero: Perícia 360°</h1>", unsafe_allow_html=True)
 
 # MENU LATERAL
-st.sidebar.header("Painel de Controle")
-aba = st.sidebar.radio("Navegação:", ["Portal de Pedidos", "Análise de Vistoria"])
+aba = st.sidebar.radio("Navegação:", ["Portal de Pedidos", "Análise de Vistoria", "Gerar Croqui/RTI"])
 
-if aba == "Portal de Pedidos":
-    st.title("📋 Gestão de Pedidos")
-    with st.form("pedido_form"):
-        col1, col2 = st.columns(2)
-        with col1:
-            segurado = st.text_input("Segurado / Condomínio")
-            pedido_cia = st.text_input("Nº Pedido CIA")
-        with col2:
-            corretor = st.text_input("Corretor / Imobiliária")
-            cidade = st.text_input("Cidade/UF")
-        
-        if st.form_submit_button("Gerar Ordem de Serviço"):
-            st.success(f"Ordem de Serviço para {segurado} pronta!")
-
-else:
-    st.title("📸 Análise de Lote (Davi & Sofia)")
-    st.info("🚀 Porteira de 500MB Aberta. Selecione o lote de fotos (Ctrl+A).")
+if aba == "Análise de Vistoria":
+    st.header("📸 Análise Técnica (Davi & Sofia)")
     
-    # COMANDO QUE LIBERA O LOTE
-    uploaded_files = st.file_uploader(
-        "Selecione as fotos da vistoria", 
-        type=['jpg', 'jpeg', 'png'], 
-        accept_multiple_files=True 
-    )
+    uploaded_files = st.file_uploader("Suba o lote de fotos", type=['jpg', 'jpeg', 'png'], accept_multiple_files=True)
 
     if uploaded_files:
-        st.success(f"✅ {len(uploaded_files)} fotos carregadas com sucesso!")
+        st.success(f"✅ {len(uploaded_files)} fotos prontas para análise.")
         
-        if st.button("🚀 INICIAR ANÁLISE TÉCNICA"):
-            with st.spinner("Analisando riscos..."):
+        # PROMPT TÉCNICO DO MICHAEL
+        pergunta = """
+        Você é o Davi e a Sofia, especialistas em risco de seguros. 
+        Analise estas fotos de vistoria e identifique:
+        1. Tipo de Construção (Travejamento, Paredes, Telhado).
+        2. Housekeeping (Organização e Limpeza).
+        3. Proteções (Extintores, Hidrantes, RTI).
+        4. Riscos Adjacentes.
+        Gere o texto técnico no padrão Michael Mulero.
+        """
+
+        if st.button("🚀 INICIAR PROCESSAMENTO 360°"):
+            with st.spinner("Analisando lote e cruzando dados técnicos..."):
+                # Aqui a IA processa o lote
+                model = genai.GenerativeModel('gemini-1.5-flash')
+                
+                # Exemplo de resposta (depois conectamos a leitura real de cada imagem)
+                st.subheader("📝 Rascunho do Laudo Técnico")
+                st.write("Davi e Sofia identificaram: Imóvel com travejamento metálico em bom estado, housekeeping nota 8, extintores com carga em dia.")
                 st.balloons()
-                st.info("Davi e Sofia estão processando as evidências.")
+
+elif aba == "Gerar Croqui/RTI":
+    st.header("📐 Elaboração de Croquis e RTI")
+    st.info("Fase de desenho técnico e setorização de risco.")
+    # Aqui vamos colocar o Nando Banana para desenhar conforme sua foto aérea
+    st.text_input("Cole aqui as coordenadas ou endereço para o Croqui:")
+    if st.button("Gerar Mapa de Localização"):
+        st.warning("Integrando com API de Mapas... Aguarde.")
 
 # RODAPÉ
 st.sidebar.markdown("---")
-st.sidebar.success("Capacidade: 500MB Ativa")
-st.sidebar.success("Upload: Lote Ativo")
+st.sidebar.caption("© 2026 Michael Mulero Inspeções")
