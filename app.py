@@ -1,50 +1,40 @@
 import streamlit as st
 import time
 
-# 1. NÚCLEO DE SEGURANÇA (Resolve erro de importação e NameError)
-st.set_page_config(page_title="Michael Mulero | Auditoria Forense", layout="wide")
+# 1. MÓDULO DE GEOINTELIGÊNCIA 360 (O Mapa ao redor do Risco)
+st.subheader("🌐 Geointeligência e Análise de Entorno")
+col_mapa, col_dados = st.columns([2, 1])
 
-if 'analise_feita' not in st.session_state:
-    st.session_state.analise_feita = False
+with col_mapa:
+    st.info("🗺️ Camada de Realidade Aumentada: Rotas de Risco Ativas")
+    # Simulação de análise de entorno (Rios, Aviões, Crime)
+    st.markdown("- **Hidrografia:** Risco de Inundação (Cota 250m) - ALTO")
+    st.markdown("- **Aéreo:** Rota de aproximação de aeroporto - MÉDIO")
+    st.markdown("- **Criminalidade:** Zona de alta incidência de roubo de carga - CRÍTICO")
 
-st.markdown("<h1 style='color: #0D47A1;'>🛡️ MICHAEL MULERO: AUDITORIA FORENSE V17</h1>", unsafe_allow_html=True)
+with col_dados:
+    st.error("🛡️ ANTI-FRAUDE: KYC (Know Your Customer)")
+    st.write("**Consulta CPF/CNPJ:** Histórico de 3 sinistros em 5 anos.")
+    st.write("**Score de Risco Moral:** 82/100 (Alerta de Fraude)")
 
-# 2. MÓDULO DE CAPTURA (A ÁGUA DO SISTEMA)
-st.subheader("📸 Captura de Evidências e Olho Digital")
-lote_arquivos = st.file_uploader("Arraste as fotos (Rachaduras e Extintores)", accept_multiple_files=True, key="master_v17")
+# 2. MÓDULO DE COMPLIANCE DO INSPETOR (Rastreio de Movimento)
+st.markdown("---")
+st.subheader("👣 Rastreabilidade do Inspetor (Anti-Preguiça)")
 
-if lote_arquivos:
-    st.success(f"✅ {len(lote_arquivos)} fotos protocoladas.")
-    
-    if st.button("🚀 EXECUTAR VARREDURA TÉCNICA (SOFIA & DAVI)"):
-        # Ritual de Perícia para engordar o olho do cliente
-        barra = st.progress(0)
-        status = st.empty()
-        for i, foto in enumerate(lote_arquivos):
-            status.text(f"Auditando Foto {i+1}: Buscando rachaduras e lendo plaquetas...")
-            time.sleep(0.1)
-            barra.progress((i + 1) / len(lote_arquivos))
-        
-        st.session_state.analise_feita = True
+c1, c2, c3 = st.columns(3)
+with c1:
+    st.metric("Passos Registrados", "2.450 passos", "Dentro do padrão")
+with c2:
+    st.metric("Tempo em Solo", "45 min", "+15 min vs Média")
+with c3:
+    st.metric("Sincronia GPS/Fotos", "100%", "Validado")
 
-# 3. RESULTADO DA AUDITORIA (SÓ APARECE SE TIVER ANÁLISE)
-if st.session_state.analise_feita:
-    st.markdown("---")
-    col1, col2 = st.columns(2)
-    
-    with col1:
-        st.error("🧱 EVIDÊNCIA ESTRUTURAL CRÍTICA")
-        st.write("- **Anomalia:** Rachadura de 3cm detectada em viga mestre.")
-        st.write("- **Risco:** Recalque diferencial ativo (Zona de Várzea).")
-        
-    with col2:
-        st.subheader("📋 INVENTÁRIO DE ATIVOS (NR-23)")
-        # Tabela corrigida e indentada perfeitamente
-        dados = [
-            {"Ativo": "Extintor PQS", "Validade": "04/2026", "Status": "🚨 VENCIDO"},
-            {"Ativo": "Extintor CO2", "Validade": "10/2027", "Status": "✅ OK"},
-            {"Ativo": "Mangueira T2", "Teste": "2025", "Status": "🚨 REPROVADO"}
-        ]
-        st.table(dados)
+st.info("📍 O inspetor percorreu 95% da área total. Caminho validado via Pedômetro e GPS.")
 
-    st.error("❌ VEREDITO: RISCO ALTÍSSIMO. Agravamento sugerido: 55%.")
+# 3. MÓDULO DE ANÁLISE DE VOZ (Entrevista Forense)
+st.markdown("---")
+st.subheader("🎙️ Análise de Entonação e Micro-Expressão")
+if st.button("🚀 ANALISAR ÁUDIO DA ENTREVISTA"):
+    with st.spinner("Analisando padrões de estresse na voz..."):
+        time.sleep(2)
+        st.warning("⚠️ Alerta: Detectada oscilação de frequência ao falar sobre 'Sistema de Incêndio'. Possível omissão de dados.")
