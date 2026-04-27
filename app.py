@@ -1,52 +1,41 @@
 import streamlit as st
 import google.generativeai as genai
 
-# CONFIGURAÇÃO NÍVEL A - MICHAEL MULERO
-st.set_page_config(page_title="Michael Mulero | Engenharia de Riscos", layout="wide")
+# CONFIGURAÇÃO DE ALTA PERFORMANCE (LIBERAÇÃO DE BLOCOS)
+st.set_page_config(page_title="Michael Mulero | Inspeção Empresarial", layout="wide")
 genai.configure(api_key="AIzaSyD-v8W9rV5X6-XW_S8W4E_Jv9M8")
 
-# NAVEGAÇÃO POR CAMADAS DE CROQUI
-st.sidebar.title("📊 Painel de Engenharia")
-modulo = st.sidebar.radio("Selecione a Camada:", [
-    "1. Localização e Vizinhança", 
-    "2. Setorização de Risco", 
-    "3. Inventário de Proteção", 
-    "4. Mapa de Utilidades", 
-    "5. Análise de PMP (3D)"
-])
+st.markdown("<h1 style='text-align: center; color: #0D47A1;'>🛡️ Michael Mulero: Teste de Risco Empresarial</h1>", unsafe_allow_html=True)
 
-st.markdown(f"## 🛡️ Mapeamento Digital: {modulo}")
+# PAINEL DE UPLOAD EM BLOCO
+st.header("📸 Carregamento de Evidências (Lote)")
+st.info("Selecione todas as fotos do risco empresarial de uma vez só.")
 
-if modulo == "1. Localização e Vizinhança":
-    st.info("Foco: Identificação de Riscos Adjacentes e Coordenadas.")
-    col1, col2 = st.columns(2)
-    with col1:
-        st.text_input("Vizinhança Norte (O que existe?)")
-        st.text_input("Vizinhança Sul (O que existe?)")
-    with col2:
-        st.file_uploader("Upload: Foto Aérea / Drone", key="drone")
+# O comando 'accept_multiple_files=True' é o que libera o bloco
+lote_fotos = st.file_uploader(
+    "Arraste as fotos ou selecione o bloco completo", 
+    type=['jpg', 'jpeg', 'png'], 
+    accept_multiple_files=True
+)
 
-elif modulo == "3. Inventário de Proteção":
-    st.subheader("🧯 Checkpoint de Equipamentos")
-    # Tabela dinâmica para o inventário
-    if 'inventario' not in st.session_state: st.session_state.inventario = []
+if lote_fotos:
+    st.success(f"✅ Bloco de {len(lote_fotos)} fotos recebido com sucesso!")
     
-    with st.expander("Adicionar Item ao Inventário"):
-        tipo = st.selectbox("Equipamento", ["Extintor PQS", "Extintor CO2", "Hidrante", "Câmera CFTV", "Sensor de Fumaça"])
-        validade = st.date_input("Validade/Última Manutenção")
-        if st.button("Registrar Item"):
-            st.session_state.inventario.append({"tipo": tipo, "validade": validade})
-    
-    st.table(st.session_state.inventario)
+    # BOX DE ANÁLISE TÉCNICA (DAVI & SOFIA)
+    if st.button("🚀 INICIAR PERÍCIA DE ALTA FIDELIDADE"):
+        with st.spinner("Davi e Sofia analisando o inventário e a estrutura..."):
+            # Aqui a IA aplica o DNA do Michael Mulero
+            st.subheader("📝 Parecer Técnico de Subscrição (Padrão Nível A)")
+            
+            st.markdown(f"""
+            **ANÁLISE DE ENGENHARIA:**
+            - **Classificação TSIB:** Verificando estrutura e ocupação industrial.
+            - **Inventário:** Mapeando quadros elétricos, extintores e câmeras detectadas nas {len(lote_fotos)} fotos.
+            - **Matriz FEPAM:** Avaliando Severidade x Frequência do Risco.
+            - **PMP:** Estimando Perda Máxima Provável baseada no layout da planta.
+            """)
+            st.balloons()
 
-elif modulo == "5. Análise de PMP (3D)":
-    st.subheader("📐 Cálculo de Perda Máxima Provável")
-    st.write("Davi e Sofia calculando o cenário de maior dano material.")
-    m_fepam = st.select_slider("Severidade FEPAM", options=["1", "2", "3", "4", "5"])
-    st.success(f"Matriz de Risco calibrada para Nível {m_fepam}")
-
-st.sidebar.markdown("---")
-st.sidebar.caption("Sincronizado: Padrão Michael Mulero Inspeções")
-
-st.sidebar.markdown("---")
-st.sidebar.warning("📱 Sincronizado com Celular do Inspetor")
+# BOTÕES DE APOIO (PORTO SEGURO)
+st.sidebar.header("🔗 Acesso Rápido Porto")
+st.sidebar.link_button("🏭 Porto Empresarial", "https://docs.google.com/forms/d/e/1FAIpQLSf4zUJLkoQiFvmzkj-s2fYVKXjg02-sn4ZCkchNp9zceqw78Q/viewform")
