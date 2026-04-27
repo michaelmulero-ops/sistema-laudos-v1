@@ -1,49 +1,52 @@
 import streamlit as st
 import google.generativeai as genai
 
-# CONFIGURAÇÃO DE ENGENHARIA
-st.set_page_config(page_title="Michael Mulero | Vistoria Balan", layout="wide")
+# CONFIGURAÇÃO NÍVEL A - MICHAEL MULERO
+st.set_page_config(page_title="Michael Mulero | Engenharia de Riscos", layout="wide")
 genai.configure(api_key="AIzaSyD-v8W9rV5X6-XW_S8W4E_Jv9M8")
 
-# --- BANCO DE DADOS DA VISTORIA ---
-if 'balan_data' not in st.session_state:
-    st.session_state['balan_data'] = {"passos": 0, "itens": []}
+# NAVEGAÇÃO POR CAMADAS DE CROQUI
+st.sidebar.title("📊 Painel de Engenharia")
+modulo = st.sidebar.radio("Selecione a Camada:", [
+    "1. Localização e Vizinhança", 
+    "2. Setorização de Risco", 
+    "3. Inventário de Proteção", 
+    "4. Mapa de Utilidades", 
+    "5. Análise de PMP (3D)"
+])
 
-st.markdown("<h1 style='text-align: center; color: #0D47A1;'>🛡️ Operação: Condomínio Residencial Balan</h1>", unsafe_allow_html=True)
-st.info("📅 Agendado para: Quarta-feira | Padrão: Inspeção Nível A")
+st.markdown(f"## 🛡️ Mapeamento Digital: {modulo}")
 
-# MENU DE CAMINHADA (O PASSO A PASSO DO INSPETOR)
-etapa = st.sidebar.selectbox("Fase da Vistoria:", 
-    ["1. Entrada e Fachada", "2. Estrutura e Cobertura", "3. Elétrica e Utilidades", "4. Prevenção e Incêndio", "5. Finalizar e Gerar RTI"])
-
-if etapa == "1. Entrada e Fachada":
-    st.header("🏢 Início do Passeio: Perímetro")
+if modulo == "1. Localização e Vizinhança":
+    st.info("Foco: Identificação de Riscos Adjacentes e Coordenadas.")
     col1, col2 = st.columns(2)
     with col1:
-        cameras = st.number_input("Câmeras na Portaria", min_value=0)
-        sensores = st.number_input("Sensores de Presença", min_value=0)
+        st.text_input("Vizinhança Norte (O que existe?)")
+        st.text_input("Vizinhança Sul (O que existe?)")
     with col2:
-        st.file_uploader("Foto da Fachada Principal", type=['jpg', 'png'], key="foto_f")
-        st.file_uploader("Foto dos Acessos (Veículos/Pedestres)", type=['jpg', 'png'], key="foto_a")
+        st.file_uploader("Upload: Foto Aérea / Drone", key="drone")
 
-elif etapa == "3. Elétrica e Utilidades":
-    st.header("⚡ Inventário Técnico: Elétrica")
-    st.warning("Foco: Disjuntores, fiação e sinais de aquecimento.")
-    qnt_quadros = st.number_input("Número de Quadros Elétricos", min_value=0)
-    obs = st.text_area("Observações Técnicas (Ex: Fiação exposta, falta de legenda)")
-    st.file_uploader("Fotos dos Quadros (Lote)", accept_multiple_files=True)
+elif modulo == "3. Inventário de Proteção":
+    st.subheader("🧯 Checkpoint de Equipamentos")
+    # Tabela dinâmica para o inventário
+    if 'inventario' not in st.session_state: st.session_state.inventario = []
+    
+    with st.expander("Adicionar Item ao Inventário"):
+        tipo = st.selectbox("Equipamento", ["Extintor PQS", "Extintor CO2", "Hidrante", "Câmera CFTV", "Sensor de Fumaça"])
+        validade = st.date_input("Validade/Última Manutenção")
+        if st.button("Registrar Item"):
+            st.session_state.inventario.append({"tipo": tipo, "validade": validade})
+    
+    st.table(st.session_state.inventario)
 
-elif etapa == "5. Finalizar e Gerar RTI":
-    st.header("📐 Consolidação do Laudo Sênior")
-    if st.button("🚀 PROCESSAR DADOS DO BALAN"):
-        with st.spinner("Davi e Sofia montando o Croqui 3D e a Matriz FEPAM..."):
-            st.success("Relatório Técnico Pré-formatado!")
-            st.markdown("""
-            **PARECER TÉCNICO (PRÉVIA):**
-            - Estrutura Classe 1 (Superior).
-            - Risco Adjacente: Residencial (Baixo impacto).
-            - PMP sugerido para subscrição: 20%.
-            """)
+elif modulo == "5. Análise de PMP (3D)":
+    st.subheader("📐 Cálculo de Perda Máxima Provável")
+    st.write("Davi e Sofia calculando o cenário de maior dano material.")
+    m_fepam = st.select_slider("Severidade FEPAM", options=["1", "2", "3", "4", "5"])
+    st.success(f"Matriz de Risco calibrada para Nível {m_fepam}")
+
+st.sidebar.markdown("---")
+st.sidebar.caption("Sincronizado: Padrão Michael Mulero Inspeções")
 
 st.sidebar.markdown("---")
 st.sidebar.warning("📱 Sincronizado com Celular do Inspetor")
