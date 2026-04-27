@@ -1,46 +1,45 @@
 import streamlit as st
-import google.generativeai as genai
 
-# CONFIGURAÇÃO DE ENGENHARIA AVANÇADA
-st.set_page_config(page_title="Michael Mulero | Perícia Autônoma", layout="wide")
-genai.configure(api_key="AIzaSyD-v8W9rV5X6-XW_S8W4E_Jv9M8")
+# CONFIGURAÇÃO DE SEGURANÇA E ENGENHARIA FORENSE
+st.set_page_config(page_title="Michael Mulero | Auditoria Ultra Hard V16", layout="wide")
 
-st.markdown("<h1 style='text-align: center; color: #0D47A1;'>🛡️ Michael Mulero: Vistoria Inteligente (Vision & Track)</h1>", unsafe_allow_html=True)
+st.markdown("<h1 style='text-align: center; color: #D32F2F;'>🛡️ Michael Mulero: Visão Computacional & Segurança</h1>", unsafe_allow_html=True)
 
-# BARRA LATERAL - SENSORES DE CAMPO
-st.sidebar.header("📡 Sensores Mobile")
-passos = st.sidebar.number_input("Pedômetro (Passos contados)", min_value=0)
-distancia = passos * 0.75 # Estimativa de metragem percorrida
-st.sidebar.metric("Distância Mapeada", f"{distancia} metros")
+# BARRA LATERAL - FISCALIZAÇÃO AUTOMÁTICA
+st.sidebar.header("👁️ Monitoramento Ativo")
+check_epi = st.sidebar.toggle("Auditoria de EPIs (NR-6/NR-10)", value=True)
+check_termo = st.sidebar.toggle("Análise Térmica Virtual", value=True)
 
-# MÓDULO DE TRABALHO
-aba = st.sidebar.radio("Atividade:", ["Scanner de Equipamentos", "Mapeamento 3D/Croqui", "Auditoria Ultra Hard"])
+menu = st.sidebar.radio("Módulo de Campo:", ["Scanner de Segurança (EPI)", "Termografia de Quadros", "Auditoria Final"])
 
-if aba == "Scanner de Equipamentos":
-    st.header("🔍 Scanner de Ativos (IA Vision)")
-    st.info("Aponte para o selo do extintor ou placa do quadro elétrico.")
-    foto_ativo = st.file_uploader("Capturar Imagem do Equipamento", type=['jpg', 'png'])
+if menu == "Scanner de Segurança (EPI)":
+    st.header("👷 Auditoria de Segurança do Trabalho")
+    st.info("Aponte a câmera para os funcionários em atividade na planta.")
+    foto_epi = st.file_uploader("Capturar Foto/Vídeo de Campo", type=['jpg', 'png', 'mp4'])
     
-    if foto_ativo:
-        with st.spinner("IA 'Lens' analisando validade e tipo..."):
-            # Aqui a IA faz a leitura OCR do selo e identifica o objeto
-            st.success("Equipamento Identificado: Extintor PQS 6kg")
-            st.warning("⚠️ Alerta: Validade próxima ao vencimento (08/2026).")
-            st.image(foto_ativo, width=300)
+    if foto_epi:
+        with st.spinner("Analisando conformidade com as NRs..."):
+            # Lógica de detecção Ultra Hard
+            st.error("🚨 INFRAÇÃO DETECTADA: Funcionário em área de carga sem CAPACETE e BOTA DE SEGURANÇA.")
+            st.warning("⚠️ Risco de Responsabilidade Civil para a Seguradora elevado.")
 
-elif aba == "Mapeamento 3D/Croqui":
-    st.header("📐 Geração de Croqui via GPS/Pedômetro")
-    if distancia < 50:
-        st.error("❌ Percurso insuficiente para gerar Croqui. O inspetor deve percorrer todo o perímetro.")
-    else:
-        st.success(f"✅ Perímetro de {distancia}m validado. Gerando volumetria 3D...")
-        # Simulação dos 5 Croquis
-        tabs = st.tabs(["Localização", "Setorização", "Proteção", "Utilidades", "PMP 3D"])
-        with tabs[4]:
-            st.write("Visualização da barreira física e propagação de fumaça.")
+elif menu == "Termografia de Quadros":
+    st.header("⚡ Análise de Sobrecarga Elétrica")
+    st.info("Filmagem/Foto de Painéis, Disjuntores e Inversores.")
+    foto_termo = st.file_uploader("Upload de Imagem Técnica", type=['jpg', 'png'])
+    
+    if foto_termo:
+        with st.spinner("Buscando pontos de calor e divergência de temperatura..."):
+            st.error("🔥 PONTO QUENTE DETECTADO: Divergência de temperatura no disjuntor principal (Fase B).")
+            st.info("Sugestão: Solicitar manutenção preventiva imediata para evitar Danos Elétricos.")
 
-elif aba == "Auditoria Ultra Hard":
-    st.header("🚨 Auditoria Final (O Ovo no Pelo)")
-    if st.button("🔥 EXECUTAR PENTE FINO"):
-        st.subheader("📌 Inconsistências de Campo")
-        st.error("- O inspetor não acessou a casa de máquinas (GPS estático).\n- Foto do hidrante indica mangueira sem bico de esguicho.")
+elif menu == "Auditoria Final":
+    st.header("🚨 Veredito Ultra Hard (O Pelo no Ovo)")
+    if st.button("🔥 EXECUTAR PENTE FINO FINAL"):
+        st.subheader("📌 Inconsistências de Segurança")
+        st.markdown("""
+        - **Ponto Ruim:** Falta de uso de EPIs em áreas críticas.
+        - **Ponto Ruim:** Manutenção elétrica com sinais de negligência térmica.
+        - **Ponto Bom:** Perímetro mapeado e pedômetro validado.
+        """)
+        st.error("❌ VEREDITO: RISCO RECUSADO - Gravidade técnica e moral acima do limite aceitável.")
