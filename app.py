@@ -1,45 +1,47 @@
 import streamlit as st
+import datetime
 
-# CONFIGURAÇÃO DE SEGURANÇA E ENGENHARIA FORENSE
-st.set_page_config(page_title="Michael Mulero | Auditoria Ultra Hard V16", layout="wide")
+st.set_page_config(page_title="Michael Mulero | Compliance & Histórico", layout="wide")
 
-st.markdown("<h1 style='text-align: center; color: #D32F2F;'>🛡️ Michael Mulero: Visão Computacional & Segurança</h1>", unsafe_allow_html=True)
+st.markdown("<h1 style='text-align: center; color: #1A237E;'>🛡️ Michael Mulero: Varredura de Sinistralidade 5 Anos</h1>", unsafe_allow_html=True)
 
-# BARRA LATERAL - FISCALIZAÇÃO AUTOMÁTICA
-st.sidebar.header("👁️ Monitoramento Ativo")
-check_epi = st.sidebar.toggle("Auditoria de EPIs (NR-6/NR-10)", value=True)
-check_termo = st.sidebar.toggle("Análise Térmica Virtual", value=True)
+# ENTRADA DE DADOS DE COMPLIANCE
+st.sidebar.header("🔍 Identificador de Risco")
+doc_consulta = st.sidebar.text_input("CPF ou CNPJ para Varredura")
+data_limite = datetime.date.today() - datetime.timedelta(days=5*365)
 
-menu = st.sidebar.radio("Módulo de Campo:", ["Scanner de Segurança (EPI)", "Termografia de Quadros", "Auditoria Final"])
+# MENU
+aba = st.sidebar.radio("Operação:", ["Varredura 5 Anos", "Auditoria de Nexo", "Relatório Final"])
 
-if menu == "Scanner de Segurança (EPI)":
-    st.header("👷 Auditoria de Segurança do Trabalho")
-    st.info("Aponte a câmera para os funcionários em atividade na planta.")
-    foto_epi = st.file_uploader("Capturar Foto/Vídeo de Campo", type=['jpg', 'png', 'mp4'])
-    
-    if foto_epi:
-        with st.spinner("Analisando conformidade com as NRs..."):
-            # Lógica de detecção Ultra Hard
-            st.error("🚨 INFRAÇÃO DETECTADA: Funcionário em área de carga sem CAPACETE e BOTA DE SEGURANÇA.")
-            st.warning("⚠️ Risco de Responsabilidade Civil para a Seguradora elevado.")
+if aba == "Varredura 5 Anos":
+    st.header(f"📅 Histórico Retrospectivo (Desde {data_limite.year})")
+    if doc_consulta:
+        with st.spinner(f"Consultando sinistros para {doc_consulta}..."):
+            # Simulação de base de dados (Ex: casos como Roberta Cardilli ou Nicanor)
+            st.subheader("🚩 Registros Encontrados:")
+            col1, col2 = st.columns(2)
+            with col1:
+                st.warning("**Sinistro 113202209... (2022):** Vendaval/Inundação")
+                st.info("Status: Indenizado | Valor: R$ 9.000,00")
+            with col2:
+                st.error("**Inconsistência:** O endereço atual coincide com zona de alagamento reincidente.")
+    else:
+        st.info("Insira um documento para iniciar a varredura automática.")
 
-elif menu == "Termografia de Quadros":
-    st.header("⚡ Análise de Sobrecarga Elétrica")
-    st.info("Filmagem/Foto de Painéis, Disjuntores e Inversores.")
-    foto_termo = st.file_uploader("Upload de Imagem Técnica", type=['jpg', 'png'])
-    
-    if foto_termo:
-        with st.spinner("Buscando pontos de calor e divergência de temperatura..."):
-            st.error("🔥 PONTO QUENTE DETECTADO: Divergência de temperatura no disjuntor principal (Fase B).")
-            st.info("Sugestão: Solicitar manutenção preventiva imediata para evitar Danos Elétricos.")
+elif aba == "Auditoria de Nexo":
+    st.header("⚖️ Análise de Nexo Causal")
+    st.write("Compare os vestígios atuais com fotos de vistorias antigas do mesmo CPF/CNPJ.")
+    st.file_uploader("Upload de Foto Atual para Comparação Digital")
+    st.button("🤖 Comparar com Histórico (IA)")
 
-elif menu == "Auditoria Final":
-    st.header("🚨 Veredito Ultra Hard (O Pelo no Ovo)")
-    if st.button("🔥 EXECUTAR PENTE FINO FINAL"):
-        st.subheader("📌 Inconsistências de Segurança")
-        st.markdown("""
-        - **Ponto Ruim:** Falta de uso de EPIs em áreas críticas.
-        - **Ponto Ruim:** Manutenção elétrica com sinais de negligência térmica.
-        - **Ponto Bom:** Perímetro mapeado e pedômetro validado.
-        """)
+elif aba == "Relatório Final":
+    st.header("📋 Veredito de Subscrição")
+    st.markdown("""
+    | Indicador | Status |
+    | :--- | :--- |
+    | **Frequência de Sinistros** | Média (2 eventos em 5 anos) |
+    | **Risco Moral** | Baixo |
+    | **Saúde Financeira** | Regular |
+    """)
+    st.success("✅ RECOMENDAÇÃO: ACEITAR COM AGRAVAMENTO DE 10% EM VENDAVAL.")
         st.error("❌ VEREDITO: RISCO RECUSADO - Gravidade técnica e moral acima do limite aceitável.")
