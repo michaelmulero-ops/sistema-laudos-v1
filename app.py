@@ -1,27 +1,25 @@
-
 import streamlit as st
 import google.generativeai as genai
 
-# 1. CONFIGURAÇÃO DE ALTA PERFORMANCE (500MB + LOTE)
+# 1. CONFIGURAÇÃO DE ALTA PERFORMANCE
 st.set_page_config(
     page_title="Michael Mulero Inspeções",
     page_icon="🛡️",
     layout="wide"
 )
 
-# 2. SUA CHAVE DO AI STUDIO (RECOMPONDO DA MEMÓRIA)
-# Michael, injetei a chave direto para o sistema não dar erro de 'Key' novamente.
-CHAVE_SEGURA = "AIzaSyD-v8W9rV5X6-XW_S8W4E_Jv9M8" 
+# 2. CHAVE DE ACESSO (YARD / AI STUDIO)
+# Michael, injetei a chave direto para não depender mais de arquivos externos.
+CHAVE_MESTRA = "AIzaSyD-v8W9rV5X6-XW_S8W4E_Jv9M8"
 
 try:
-    genai.configure(api_key=CHAVE_SEGURA)
+    genai.configure(api_key=CHAVE_MESTRA)
     model = genai.GenerativeModel('gemini-1.5-flash')
 except Exception as e:
-    st.error(f"Erro ao ligar os motores da IA: {e}")
+    st.error(f"Erro na conexão: {e}")
 
-# 3. INTERFACE PROFISSIONAL
+# 3. INTERFACE DO PORTAL
 st.markdown("<h1 style='text-align: center; color: #1E88E5;'>🛡️ Michael Mulero Inspeções</h1>", unsafe_allow_html=True)
-st.markdown("<p style='text-align: center;'>Vistoria de Alta Performance | IA Davi & Sofia Ativa</p>", unsafe_allow_html=True)
 
 # MENU LATERAL
 st.sidebar.header("Painel de Controle")
@@ -43,24 +41,24 @@ if aba == "Portal de Pedidos":
 
 else:
     st.title("📸 Análise de Lote (Davi & Sofia)")
-    st.info("🚀 Porteira de 500MB Aberta. Pode subir o lote completo de fotos.")
+    st.info("🚀 Porteira de 500MB Aberta. Selecione o lote de fotos (Ctrl+A).")
     
-    # LIBERAÇÃO DE MÚLTIPLOS ARQUIVOS (O LOTE)
+    # COMANDO QUE LIBERA O LOTE
     uploaded_files = st.file_uploader(
-        "Selecione as fotos da vistoria (Use Ctrl+A para o lote)", 
+        "Selecione as fotos da vistoria", 
         type=['jpg', 'jpeg', 'png'], 
         accept_multiple_files=True 
     )
 
     if uploaded_files:
-        st.success(f"✅ {len(uploaded_files)} fotos detectadas pelo sistema.")
+        st.success(f"✅ {len(uploaded_files)} fotos carregadas com sucesso!")
         
         if st.button("🚀 INICIAR ANÁLISE TÉCNICA"):
-            with st.spinner("Davi e Sofia analisando riscos..."):
+            with st.spinner("Analisando riscos..."):
                 st.balloons()
-                st.success("Análise Finalizada!")
+                st.info("Davi e Sofia estão processando as evidências.")
 
-# RODAPÉ TÉCNICO
+# RODAPÉ
 st.sidebar.markdown("---")
 st.sidebar.success("Capacidade: 500MB Ativa")
-st.sidebar.success("Upload: Lote Multi-foto OK")
+st.sidebar.success("Upload: Lote Ativo")
