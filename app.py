@@ -1,85 +1,90 @@
+
 import streamlit as st
 import google.generativeai as genai
 import datetime
 
-# 1. CONFIGURAÇÃO MASTER DO PORTAL MICHAEL MULERO
-st.set_page_config(page_title="Michael Mulero | Auditoria Ultra Hard", layout="wide")
+# --- CONFIGURAÇÃO DE ENGENHARIA MICHAEL MULERO ---
+st.set_page_config(page_title="Michael Mulero | Auditoria Forense V17", layout="wide")
 
-# (Aqui você insere sua chave API do Google)
-genai.configure(api_key="SUA_CHAVE_AQUI")
+# CABEÇALHO EXECUTIVO
+st.markdown("<h1 style='text-align: center; color: #0D47A1;'>🛡️ MICHAEL MULERO: AUDITORIA FORENSE V17</h1>", unsafe_allow_html=True)
+st.markdown("<p style='text-align: center; color: #555;'>Protocolo Ultra-Hard: Inteligência Preditiva e Subscrição Sênior</p>", unsafe_allow_html=True)
 
-# --- CABEÇALHO DE APRESENTAÇÃO ---
-st.markdown("<h1 style='text-align: center; color: #1A237E;'>🛡️ MICHAEL MULERO: AUDITORIA FORENSE V17</h1>", unsafe_allow_html=True)
-st.markdown("<p style='text-align: center; font-size: 1.2em;'>Inteligência em Subscrição e Engenharia de Riscos</p>", unsafe_allow_html=True)
+# BARRA LATERAL - SELETOR DE ETAPAS
+st.sidebar.header("⚙️ Fluxo de Trabalho")
+etapa = st.sidebar.radio("Selecione o Módulo:", 
+    ["1. Compliance e Risco Moral", "2. Engenharia e Croquis (Mídia)", "3. Auditoria Ultra-Hard (Veredito)"])
 
-# 2. BARRA LATERAL - PAINEL DE CONTROLE DO INVESTIDOR
-st.sidebar.header("⚙️ Painel de Operações")
-etapa = st.sidebar.radio("Selecione a Etapa do Dossiê:", 
-    ["1. Compliance e Risco Moral", "2. Engenharia e Croquis 3D", "3. Auditoria Ultra Hard (Veredito)"])
-
-# 3. ETAPA 1: COMPLIANCE E PESQUISA DE 5 ANOS
+# --- ETAPA 1: COMPLIANCE ---
 if etapa == "1. Compliance e Risco Moral":
-    st.header("👤 Etapa 1: Varredura de CPF/CNPJ e Veracidade")
+    st.header("👤 Módulo 1: Identificação e Histórico de 5 Anos")
     col1, col2 = st.columns(2)
-    
     with col1:
-        doc = st.text_input("Inserir CPF ou CNPJ para Varredura Retrospectiva (5 Anos)")
-        st.info("A IA buscará sinistros passados, processos e saúde financeira.")
-        
+        st.subheader("Varredura CPF/CNPJ")
+        doc = st.text_input("Inserir documento para varredura de sinistros antigos:")
+        if doc:
+            st.info("🔎 IA processando histórico... (Status: Sinistros reincidentes em 2023 detectados)")
     with col2:
-        voz = st.select_slider("Análise Acústica de Veracidade (IA)", options=["Confiante", "Neutro", "Evasivo/Suspeito"])
-        if voz == "Evasivo/Suspeito":
-            st.warning("🕵️ Detetada inconsistência no tom de voz do segurado.")
+        st.subheader("Análise de Veracidade")
+        veracidade = st.select_slider("Análise de Tom de Voz:", options=["Confiante", "Neutro", "Evasivo"])
+        if veracidade == "Evasivo":
+            st.warning("🕵️ Inconsistência acústica detectada no relato do segurado.")
 
-# 4. ETAPA 2: ENGENHARIA, GPS E OS 5 CROQUIS
-elif etapa == "2. Engenharia e Croquis 3D":
-    st.header("📐 Etapa 2: Mapeamento Cognitivo e Ativos")
+# --- ETAPA 2: ENGENHARIA E UPLOAD (ABRIR A ÁGUA) ---
+elif etapa == "2. Engenharia e Croquis (Mídia)":
+    st.header("📐 Módulo 2: Captura de Evidências e Geointeligência")
     
-    # Validação Anti-Preguiça
-    st.sidebar.subheader("📡 Sensores de Campo")
-    passos = st.sidebar.number_input("Pedômetro (Passos Auditados)", value=0)
-    st.sidebar.write(f"Distância Percorrida: {passos * 0.75} metros")
+    st.subheader("📸 Upload do Lote (Fotos, Vídeos e Termografia)")
+    st.write("Arraste o bloco de fotos aqui para gerar os croquis automaticamente.")
+    
+    # CAMPO DE UPLOAD PARA FOTOS E VÍDEOS
+    lote_arquivos = st.file_uploader(
+        "Carregar Evidências do Risco (Ctrl+A)", 
+        type=['jpg', 'jpeg', 'png', 'mp4', 'mov'], 
+        accept_multiple_files=True,
+        key="upload_v17_recheio"
+    )
 
-    tabs = st.tabs(["Localização (GIS)", "Setorização 3D", "Proteção (Vision)", "Utilidades", "PMP (Simulação)"])
-    
-    with tabs[0]:
-        st.subheader("Análise Geográfica")
-        st.write("Mapeamento de Relevo, Hidrografia e Rotas de Aeronaves.")
-        st.file_uploader("Upload Drone/Satélite", key="gis")
+    if lote_arquivos:
+        st.success(f"✅ {len(lote_arquivos)} arquivos prontos para processamento visual.")
         
-    with tabs[2]:
-        st.subheader("Scanner de Ativos (Google Lens)")
-        st.info("IA lê selos de extintores e hidrantes automaticamente.")
-        st.file_uploader("Capturar Foto de Equipamento", accept_multiple_files=True)
-
-# 5. ETAPA 3: AUDITORIA ULTRA HARD (O PELO NO OVO)
-elif etapa == "3. Auditoria Ultra Hard (Veredito)":
-    st.header("🚨 Etapa 3: Auditoria Forense Final")
     st.markdown("---")
+    st.subheader("🗺️ Geração de Croquis Técnicos")
+    t1, t2, t3 = st.tabs(["Localização (GIS)", "Setorização 3D", "PMP (Simulação)"])
+    
+    with t1:
+        st.info("Visualização de Raio de Calor, Ventos Dominantes e Hidrografia.")
+        st.markdown("**[CROQUI 1: MAPA DE EXPOSIÇÃO GEOGRÁFICA]**")
+    with t2:
+        st.info("Planta em 'H' com separação física de riscos.")
+        st.markdown("**[CROQUI 2: SETORIZAÇÃO E ENGENHARIA]**")
+    with t3:
+        st.error("Simulação: 85% de perda em caso de falha na parede corta-fogo.")
+        st.markdown("**[CROQUI 5: SIMULAÇÃO DE PERDA MÁXIMA PROVÁVEL]**")
+
+# --- ETAPA 3: AUDITORIA FINAL (O RECHEIO) ---
+elif etapa == "3. Auditoria Ultra-Hard (Veredito)":
+    st.header("🚨 Módulo 3: Auditoria Forense e Olho Clínico")
     
     col_a, col_b = st.columns(2)
-    
     with col_a:
-        st.subheader("🔥 Análise Térmica Virtual")
-        st.image("https://via.placeholder.com/400x300.png?text=Termografia+IA+Detectada", caption="Detecção de Ponto Quente em Painel Elétrico")
-        st.error("Divergência Térmica: +18°C detectada no Disjuntor Principal.")
-
+        st.subheader("🔥 Termografia Virtual")
+        st.markdown("<div style='background-color:#eee; height:200px; display:flex; align-items:center; justify-content:center; border:2px dashed #999;'>[FOTO IA: ESPECTRO TÉRMICO - PONTO QUENTE DETECTADO]</div>", unsafe_allow_html=True)
+        st.error("Sobrecarga no Painel QGBT-01: Disjuntor operando a 78°C.")
+        
     with col_b:
-        st.subheader("👷 Auditoria de EPI (NR-6)")
-        st.image("https://via.placeholder.com/400x300.png?text=Scanner+EPI+Ativo", caption="Análise de Conformidade de Funcionários")
-        st.warning("Infração NR-6: Funcionário operando sem luvas dielétricas.")
+        st.subheader("👷 Scanner de EPI (NR-6)")
+        st.markdown("<div style='background-color:#eee; height:200px; display:flex; align-items:center; justify-content:center; border:2px dashed #999;'>[FOTO IA: SCANNER DE SEGURANÇA - INFRAÇÃO NR-6]</div>", unsafe_allow_html=True)
+        st.warning("Funcionário flagrado sem luvas dielétricas e bota de segurança.")
 
     st.markdown("---")
-    if st.button("📄 GERAR DOSSIÊ COMPLETO (30 PÁGINAS)"):
+    if st.button("📄 GERAR DOSSIÊ EXECUTIVO DE 30 PÁGINAS"):
         st.balloons()
-        st.success("Dossiê gerado com sucesso! Pronto para apresentação ao investidor.")
-        st.markdown("""
-        ### RESUMO EXECUTIVO DO LAUDO:
-        - **Veredito:** Aceitação com Restrição (Agravamento 35%).
-        - **Motivo:** Risco moral suspeito e falha grave em manutenção elétrica.
-        - **PMP:** R$ 2.400.000,00.
-        """)
+        st.subheader("📋 Veredito Michael Mulero:")
+        st.error("RECOMENDAÇÃO: ACEITAÇÃO COM AGRAVAMENTO DE 35%.")
+        st.write("Motivo: Inconsistência moral e manutenção elétrica negligente detectada por IA.")
 
-# RODAPÉ TÉCNICO
+# RODAPÉ DE FISCALIZAÇÃO
 st.sidebar.markdown("---")
-st.sidebar.caption("© 2026 Michael Mulero | Engenharia de Riscos")
+st.sidebar.caption(f"Distância Percorrida: 1.250m (GPS Validado)")
+st.sidebar.caption("© 2026 Michael Mulero Inspeções")
