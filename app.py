@@ -1,26 +1,42 @@
 import streamlit as st
 import datetime
+import google.generativeai as genai
 from google.api_core import retry
 
-# --- CONFIGURAÇÃO DE SEGURANÇA CONTRA LOOPS ---
-# Se a IA demorar mais de 20 segundos, o sistema corta a conexão para não travar.
+# 1. CONFIGURAÇÃO DA CHAVE (LIGAÇÃO DIRETA)
+# Substitua o texto abaixo pela sua chave que começa com 'AIza...'
+CHAVE_API = "COLE_SUA_CHAVE_AQUI"
+genai.configure(api_key=CHAVE_API)
+model = genai.GenerativeModel('gemini-1.5-flash')
+
+# 2. CONFIGURAÇÃO CONTRA LOOPS
+# Se a IA demorar mais de 20 segundos, o sistema corta a conexão.
 config_segura = {"request_options": {"timeout": 20}}
 
-# --- FUNÇÃO DE RASTREAMENTO (BARRA LATERAL) ---
-# Isso cria o "diário de bordo" na lateral do seu sistema.
-st.sidebar.header("Rastreamento Michael Mulero")
+# 3. INTERFACE E RASTREAMENTO
+st.title("Michael Mulero Inspeções Tech V1")
+
+st.sidebar.header("Rastreamento em Tempo Real")
 status_log = st.sidebar.empty()
 
 def log_rastreio(mensagem):
     hora = datetime.datetime.now().strftime("%H:%M:%S")
-    # Atualiza o status na tela em tempo real[cite: 1].
-    status_log.info(f"[{hora}] {mensagem}")
+    status_log.info(f"[{hora}] {mensagem}")[cite: 1]
 
-# --- EXEMPLO DE COMO USAR DENTRO DO SEU PROCESSO ---
-# Quando você for gerar o laudo, use este bloco:
-# try:
-#     log_rastreio("Iniciando análise técnica...")[cite: 1]
-#     response = model.generate_content(prompt, **config_segura)[cite: 2]
-#     log_rastreio("Laudo gerado com sucesso!")[cite: 1]
-# except Exception as e:
-#     log_rastreio(f"ERRO: O sistema pulou uma etapa para evitar loop.")[cite: 1, 2]
+# 4. ÁREA DE TESTE DO SISTEMA
+pergunta = st.text_input("O que você deseja analisar agora? (Ex: Risco NR-10)")
+
+if st.button("Executar Análise"):
+    try:
+        log_rastreio("Iniciando contato com o cérebro da IA...")[cite: 1]
+        
+        # Chamada segura com o 'disjuntor' de 20 segundos[cite: 2]
+        response = model.generate_content(pergunta, request_options={"timeout": 20})
+        
+        st.write("### Resultado da Inspeção:")
+        st.write(response.text)
+        log_rastreio("Análise finalizada com sucesso!")[cite: 1]
+        
+    except Exception as e:
+        log_rastreio("ERRO: O sistema parou para evitar um travamento.")[cite: 1, 2]
+        st.error(f"Ocorreu um problema ou lentidão. Detalhe: {e}")
