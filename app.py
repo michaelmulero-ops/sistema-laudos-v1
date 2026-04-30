@@ -21,37 +21,36 @@ st.title("Michael Mulero Inspeções Tech V1 📱")
 
 with st.expander("📊 Inteligência de Dados (CNPJ, Arredores e Ambiental)", expanded=True):
     cnpj_cliente = st.text_input("CNPJ do Risco")
-    st.info("Varredura em raio de 500m: Escolas, Rios, Sindicatos e Criminalidade ativados.")
+    st.info("Varredura 500m: Escolas, Rios, Granizo, Ciclones e Criminalidade ativos.")
 
 st.subheader("📸 Captura de Campo")
-foto_tirada = st.camera_input("Foto da Fachada (Referência: Frente para a rua)")
+foto_tirada = st.camera_input("Foto da Fachada (Frente para a rua)")
 
-if st.button("🚀 GERAR DOSSIÊ COMPLETO COM VISTA AÉREA"):
+if st.button("🚀 GERAR DOSSIÊ COMPLETO"):
     try:
-        log_rastreio("Iniciando varredura 500m (Sindicatos, Rios, Escolas)...")
-        log_rastreio("Acessando Vista Aérea para contagem de Placas Solares...")
-        log_rastreio("Analisando riscos ambientais (Vento, Granizo)...")
+        log_rastreio("Rastreando frequência de Granizo e Ciclones na região...")
+        log_rastreio("Contando Placas Solares via Vista Aérea...")
+        log_rastreio("Mapeando vizinhos (Sindicatos/Escolas) em 500m...")
         
         imagem = Image.open(foto_tirada)
         
-        # PROMPT DE IA PARA ANÁLISE COMPLETA
         prompt = f"""
-        Analise o risco para o CNPJ {cnpj_cliente} com foco em:
-        1. VISTA AÉREA: Identifique se há placas solares no telhado e QUANTAS são.
-        2. VIZINHANÇA (500m): Localize sindicatos, escolas, rios ou campos de futebol.
-        3. AMBIENTAL: Risco de granizo e ventos na região de Londrina/Ibiporã.
+        Analise o risco para o CNPJ {cnpj_cliente}:
+        1. CLIMA ATÍPICO: Frequência de granizo, chuvas de pedra e vendavais na região de Londrina/Ibiporã.
+        2. ENERGIA: Identifique e conte as PLACAS SOLARES no telhado.
+        3. VIZINHANÇA: Escolas, sindicatos ou rios em um raio de 500m.
         4. TÉCNICO: Riscos Severidade 5 (NR-10, 11, 13).
-        5. PADRÃO: Mantenha os 5 croquis orientados com a FRENTE PARA A RUA.
+        5. CROQUIS: Gere a lógica dos 5 croquis sempre com a FRENTE PARA A RUA.
         """
         
-        log_rastreio("Processando inteligência artificial (Timeout 60s)...")
+        log_rastreio("Processando IA (Timeout 60s)...")
         response = model.generate_content([prompt, imagem], request_options={"timeout": 60})
         
-        st.success("Dossiê Michael Mulero Gerado!")
-        st.write("### Relatório Consolidado:")
+        st.success("Dossiê Michael Mulero Gerado com Sucesso!")
+        st.write("### Relatório Consolidado de Riscos:")
         st.write(response.text)
         log_rastreio("Dossiê finalizado com sucesso!")
         
     except Exception as e:
-        log_rastreio("ERRO: Falha na conexão de campo. Tente novamente.")
+        log_rastreio("ERRO: Rede instável. Tente novamente.")
         st.error(f"Erro no processamento: {e}")
