@@ -34,33 +34,24 @@ with st.expander("📄 Subir Pedido de Vistoria (PDF)", expanded=True):
         except Exception as e:
             st.error(f"Erro ao ler o PDF: {e}")
 
-# DADOS ADICIONAIS
-with st.expander("🔍 Informações do Risco"):
-    cnpj_cliente = st.text_input("CNPJ (Se não estiver no PDF)")
-
-st.subheader("📸 Captura de Evidências")
+# DADOS ADICIONAIS E CAPTURA
+cnpj_cliente = st.text_input("CNPJ (Se não estiver no PDF)")
 foto_tirada = st.camera_input("Foto da Fachada (Frente para a rua)")
 
 if st.button("🚀 GERAR DOSSIÊ COMPLETO"):
     if not foto_tirada or (not texto_extraido and not cnpj_cliente):
-        st.warning("Por favor, suba o pedido e capture a foto da fachada.")
+        st.warning("Suba o pedido e capture a foto primeiro.")
     else:
         try:
-            log_rastreio("Nano Banana: Desenhando 5 croquis automáticos...")
-            log_rastreio("Mapeando vizinhos em 500m (Sindicatos/Rios/Escolas)...")
+            log_rastreio("Nano Banana: Desenhando 5 croquis...")
+            log_rastreio("Mapeando vizinhos em 500m (Sindicatos/Rios)...")
             
             imagem = Image.open(foto_tirada)
-            prompt = f"""
-            Analise o risco baseado neste pedido: {texto_extraido[:2000]}
-            1. VISTA AÉREA: Identifique e conte as PLACAS SOLARES no telhado.
-            2. AMBIENTAL: Risco de granizo e ciclones em Londrina/Ibiporã.
-            3. VIZINHANÇA: Liste escolas, rios e sindicatos num raio de 500m.
-            4. ORIENTAÇÃO: 5 croquis sempre com a FRENTE PARA A RUA.
-            """
+            prompt = f"Analise o risco para o CNPJ {cnpj_cliente} com base no pedido: {texto_extraido[:2000]}. Conte as PLACAS SOLARES e gere 5 croquis com a FRENTE PARA A RUA."
             
             response = model.generate_content([prompt, imagem], request_options={"timeout": 60})
-            st.success("Dossiê Michael Mulero Gerado!")
+            st.success("Dossiê Gerado!")
             st.write(response.text)
-            log_rastreio("Laudo finalizado com sucesso!")
+            log_rastreio("Laudo finalizado!")
         except Exception as e:
-            st.error(f"Erro no processamento: {e}")
+            st.error(f"Erro: {e}")
