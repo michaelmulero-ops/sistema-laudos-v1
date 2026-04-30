@@ -52,8 +52,8 @@ if st.button("🚀 GERAR DOSSIÊ COMPLETO"):
             imagem = Image.open(foto_tirada)
             prompt = f"""
             Analise o risco baseado neste pedido: {texto_extraido[:2000]}
-            1. VISTA AÉREA: Identifique e conte as PLACAS SOLARES.
-            2. AMBIENTAL: Risco de granizo e ciclones em Londrina/Ibiporã.
+            1. VISTA AÉREA: Identifique e conte as PLACAS SOLARES no telhado.
+            2. AMBIENTAL: Risco de granizo e ciclones na região de Londrina/Ibiporã.
             3. VIZINHANÇA: Liste escolas, rios e sindicatos num raio de 500m.
             4. ORIENTAÇÃO: 5 croquis sempre com a FRENTE PARA A RUA.
             5. NORMAS: Aplique NR-10, 11 e 13.
