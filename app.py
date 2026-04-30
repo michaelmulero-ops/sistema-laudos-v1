@@ -1,15 +1,14 @@
 import streamlit as st
 import datetime
 import google.generativeai as genai
-from PIL import Image
+import json
 
-# 1. CONFIGURAÇÃO DA CHAVE (LIGAÇÃO DIRETA)
-# Coloque sua chave entre as aspas abaixo
+# 1. CONFIGURAÇÃO DE SEGURANÇA E CHAVE
 CHAVE_API = "COLE_SUA_CHAVE_AQUI"
 genai.configure(api_key=CHAVE_API)
-model = genai.GenerativeModel('gemini-1.5-flash')
+config_segura = {"request_options": {"timeout": 20}} # Impede o travamento do sistema
 
-# 2. SISTEMA DE RASTREAMENTO E SEGURANÇA
+# 2. RASTREAMENTO EM TEMPO REAL
 st.sidebar.header("Rastreamento Michael Mulero")
 status_log = st.sidebar.empty()
 
@@ -17,34 +16,55 @@ def log_rastreio(mensagem):
     hora = datetime.datetime.now().strftime("%H:%M:%S")
     status_log.info(f"[{hora}] {mensagem}")[cite: 1]
 
-# 3. INTERFACE DE USUÁRIO
-st.title("Sistema de Inspeção Tech V1")
-st.write("---")
+# 3. SUA CLASSE DE INSPEÇÃO (Lógica de Decisão)
+class SistemaInspecao:
+    def __init__(self, projeto_id):
+        self.projeto_id = projeto_id
+        self.itens = []
 
-# Campo para subir a foto da inspeção (padarias, fábricas, fiações, etc)
-foto_carregada = st.file_uploader("Selecione a foto da inspeção", type=['jpg', 'jpeg', 'png'])
+    def adicionar_item(self, nome, severidade, conforme, evidencia_foto):
+        self.itens.append({
+            "item": nome,
+            "severidade": severidade,
+            "conforme": conforme,
+            "foto": evidencia_foto
+        })
+        log_rastreio(f"Item adicionado: {nome} (Severidade {severidade})")[cite: 1]
 
-if foto_carregada is not None:
-    imagem = Image.open(foto_carregada)
-    st.image(imagem, caption="Foto carregada para análise", use_column_width=True)
-    
-    if st.button("Analisar Risco na Foto"):
-        try:
-            log_rastreio("Enviando foto para análise da IA...")[cite: 1]
-            
-            # O 'timeout' de 20s impede que o sistema trave se a imagem for pesada
-            prompt = "Analise esta foto de inspeção técnica. Identifique riscos conforme as NRs brasileiras e sugira ações corretivas."
-            
-            response = model.generate_content(
-                [prompt, imagem], 
-                request_options={"timeout": 20}
-            )
-            
-            st.success("Análise concluída!")
-            st.write("### Relatório Técnico Preliminar:")
-            st.write(response.text)
-            log_rastreio("Laudo da foto gerado com sucesso!")[cite: 1]
-            
-        except Exception as e:
-            log_rastreio("ERRO: A análise da foto demorou demais e foi interrompida.")[cite: 1, 2]
+    def processar_laudo(self):
+        log_rastreio("Processando laudo final e verificando riscos nível 5...")[cite: 1]
+        aprovado = True
+        motivos_reprovacao = []
+
+        for item in self.itens:
+            # Regra de Ouro contra loops e riscos críticos
+            if item['severidade'] == 5 and not item['conforme']:
+                aprovado = False
+                motivos_reprovacao.append(f"Risco Crítico identificado: {item['item']}")
+        
+        status = "APROVADO" if aprovado else "DESAPROVADO"
+        log_rastreio(f"Resultado final calculado: {status}")[cite: 1]
+        return {"Status_Final": status, "Motivos": motivos_reprovacao}
+
+# 4. INTERFACE STREAMLIT
+st.title("Michael Mulero Inspeções - Análise de Risco")
+
+# Exemplo de teste no sistema
+if st.button("Simular Processamento do Laudo"):
+    try:
+        # Iniciando a classe para o projeto de hoje
+        inspecao = SistemaInspecao("Projeto_Teste_Hoje")
+        
+        # Simulando os itens que você e a Taís vão coletar
+        inspecao.adicionar_item("Instalação Elétrica (NR 10)", 5, False, "evidencia_01.jpg")
+        inspecao.adicionar_item("Extintores (NR 23)", 2, True, "evidencia_02.jpg")
+        
+        # Processando com segurança
+        resultado = inspecao.processar_laudo()
+        
+        st.write("### Relatório de Saída:")
+        st.json(resultado)
+        
+    except Exception as e:
+        log_rastreio("ERRO: O processamento falhou ou demorou demais.")[cite: 1, 2] interrompida.")[cite: 1, 2]
             st.error(f"Falha ao processar imagem: {e}")
