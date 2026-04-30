@@ -19,7 +19,7 @@ def log_rastreio(mensagem):
 
 st.title("Michael Mulero Inspeções Tech V1 📱")
 
-# ABA DE UPLOAD DO PDF (PEDIDO)
+# ABA DE UPLOAD DO PDF
 with st.expander("📄 Subir Pedido de Vistoria (PDF)", expanded=True):
     arquivo_pdf = st.file_uploader("Arraste o PDF do pedido aqui", type=['pdf'])
     texto_extraido = ""
@@ -29,8 +29,8 @@ with st.expander("📄 Subir Pedido de Vistoria (PDF)", expanded=True):
             reader = PdfReader(arquivo_pdf)
             for page in reader.pages:
                 texto_extraido += page.extract_text()
-            st.success("Pedido lido com sucesso!")
-            log_rastreio("Dados do segurado carregados via PDF.")
+            st.success("Pedido carregado com sucesso!")
+            log_rastreio("Dados do segurado extraídos via PDF.")
         except Exception as e:
             st.error(f"Erro ao ler o PDF: {e}")
 
