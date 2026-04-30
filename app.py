@@ -30,7 +30,7 @@ with st.expander("📄 Subir Pedido de Vistoria (PDF)", expanded=True):
             for page in reader.pages:
                 texto_extraido += page.extract_text()
             st.success("Pedido carregado com sucesso!")
-            log_rastreio("Dados do segurado extraídos via PDF.")
+            log_rastreio("Dados extraídos via PDF.")
         except Exception as e:
             st.error(f"Erro ao ler o PDF: {e}")
 
@@ -46,8 +46,8 @@ if st.button("🚀 GERAR DOSSIÊ COMPLETO"):
         st.warning("Por favor, suba o pedido e capture a foto da fachada.")
     else:
         try:
-            log_rastreio("Acionando Nano Banana: Desenhando 5 croquis...")
-            log_rastreio("Mapeando raio 500m: Sindicatos, Escolas e Rios...")
+            log_rastreio("Nano Banana: Desenhando 5 croquis automáticos...")
+            log_rastreio("Mapeando vizinhos em 500m (Sindicatos/Rios/Escolas)...")
             
             imagem = Image.open(foto_tirada)
             prompt = f"""
@@ -56,6 +56,7 @@ if st.button("🚀 GERAR DOSSIÊ COMPLETO"):
             2. AMBIENTAL: Risco de granizo e ciclones em Londrina/Ibiporã.
             3. VIZINHANÇA: Liste escolas, rios e sindicatos num raio de 500m.
             4. ORIENTAÇÃO: 5 croquis sempre com a FRENTE PARA A RUA.
+            5. NORMAS: Aplique NR-10, 11 e 13.
             """
             
             response = model.generate_content([prompt, imagem], request_options={"timeout": 60})
@@ -63,4 +64,4 @@ if st.button("🚀 GERAR DOSSIÊ COMPLETO"):
             st.write(response.text)
             log_rastreio("Laudo finalizado com sucesso!")
         except Exception as e:
-            st.error(f"Erro: {e}")
+            st.error(f"Erro no processamento: {e}")
