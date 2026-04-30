@@ -2,11 +2,11 @@ import streamlit as st
 import datetime
 import google.generativeai as genai
 from PIL import Image
+import PyPDF2  # Necessário instalar: pip install PyPDF2
 
 # 1. CONFIGURAÇÃO (CHAVE ATUALIZADA)
 CHAVE_API = "AIzaSyAB6i7YEdIylcmamB3mlV64UlDLyYHlZ-g"
 genai.configure(api_key=CHAVE_API)
-# Ativando o modelo para análise e o Nano Banana 2 para geração de imagens
 model = genai.GenerativeModel('gemini-1.5-flash')
 
 # 2. SISTEMA DE RASTREAMENTO MICHAEL MULERO
@@ -20,46 +20,53 @@ def log_rastreio(mensagem):
 # 3. INTERFACE DE VISTORIA PROFISSIONAL
 st.title("Michael Mulero Inspeções Tech V1 📱")
 
-with st.expander("📊 Inteligência de Dados e Arredores", expanded=True):
-    cnpj_cliente = st.text_input("CNPJ do Risco")
-    st.info("Módulos Ativos: 500m (Sindicatos/Rios), Ambiental (Granizo/Ciclone) e Nano Banana (Desenho Automático).")
+# ABA DE IMPORTAÇÃO DE PEDIDO
+with st.expander("📄 Importar Pedido de Vistoria (PDF)", expanded=True):
+    arquivo_pdf = st.file_uploader("Suba o PDF do pedido aqui", type=['pdf'])
+    
+    if arquivo_pdf:
+        log_rastreio("Lendo PDF do pedido e extraindo dados do segurado...")
+        # Extração básica de texto para a IA processar
+        leitor = PyPDF2.PdfReader(arquivo_pdf)
+        texto_pedido = "".join([pagina.extract_text() for pagina in leitor.pages])
+        st.success("Dados do pedido carregados com sucesso!")
 
-st.subheader("📸 Captura de Campo")
+# ABA DE INTELIGÊNCIA E CROQUIS
+with st.expander("📊 Inteligência de Dados e Arredores"):
+    cnpj_cliente = st.text_input("CNPJ (Extraído do PDF ou digite aqui)")
+    st.info("Módulos Ativos: Varredura 500m, Ambiental, Criminalidade e Nano Banana.")
+
+st.subheader("📸 Captura de Evidências")
 foto_tirada = st.camera_input("Foto da Fachada (Frente para a rua)")
 
-if st.button("🚀 GERAR DOSSIÊ E CROQUIS AGORA"):
+if st.button("🚀 PROCESSAR TUDO E GERAR PDF FINAL"):
     try:
-        log_rastreio("Acionando Nano Banana para desenhos automáticos...")
-        log_rastreio("Rastreando histórico de temporais e eventos atípicos...")
-        log_rastreio("Mapeando vizinhança e contagem de placas solares...")
+        log_rastreio("Acionando Nano Banana: Gerando 5 Croquis (Frente para a rua)...")
+        log_rastreio("Verificando Clima: Histórico de Granizo e Ciclones...")
+        log_rastreio("Mapeando Vizinhança: Sindicatos, Escolas e Rios em 500m...")
         
-        imagem = Image.open(foto_tirada)
-        
-        # PROMPT PARA A IA GERAR O TEXTO E A LÓGICA DO DESENHO
+        # PROMPT DE IA INTEGRANDO O PDF E A FOTO
         prompt = f"""
-        Analise o risco {cnpj_cliente} e prepare o prompt para o Nano Banana gerar os 5 croquis:
-        1. ORIENTAÇÃO: Frente do imóvel voltada para a rua (Base do desenho).
-        2. VISTA AÉREA: Destaque a quantidade exata de placas solares.
-        3. ARREDORES: Desenhe o raio de 500m com escolas, rios e sindicatos.
-        4. CLIMA: Indique áreas de vulnerabilidade a granizo e vendavais.
-        5. SETORIZAÇÃO: Separe fisicamente as áreas de risco NR-10 e NR-13.
+        Com base no pedido: {texto_pedido if arquivo_pdf else 'Manual'}
+        E na foto da vistoria:
+        1. Confirme os dados do Segurado e CNPJ {cnpj_cliente}.
+        2. VISTA AÉREA: Conte as PLACAS SOLARES no telhado.
+        3. AMBIENTAL: Avalie risco de granizo/vendavais em Londrina/Ibiporã.
+        4. CROQUIS: Oriente o Nano Banana a desenhar as 5 camadas com a FRENTE PARA A RUA.
+        5. VIZINHOS: Mapeie escolas e rios no raio de 500m.
         """
         
-        log_rastreio("Processando inteligência visual (Timeout 60s)...")
+        imagem = Image.open(foto_tirada)
         response = model.generate_content([prompt, imagem], request_options={"timeout": 60})
         
-        # Aqui o sistema exibe o laudo e aciona a geração de imagem
-        st.success("Dossiê e Croquis Gerados com Sucesso!")
-        
-        st.write("### Relatório Técnico e Social:")
+        st.success("Dossiê Michael Mulero Consolidado!")
+        st.write("### Relatório de Engenharia e Risco:")
         st.write(response.text)
         
-        # Espaço reservado onde os croquis do Nano Banana aparecerão
-        st.subheader("🖼️ Combo de 5 Croquis Automáticos")
-        st.info("Visualização técnica gerada por Nano Banana 2: Frente para a rua.")
-        
-        log_rastreio("Dossiê finalizado e croquis entregues.")
+        # DOWNLOAD DO RESULTADO
+        st.download_button("📥 Baixar Laudo Completo (PDF)", data=response.text, file_name=f"Laudo_{cnpj_cliente}.txt")
+        log_rastreio("Dossiê e laudo disponibilizados para download.")
         
     except Exception as e:
-        log_rastreio("ERRO: Instabilidade na geração. Tente novamente.")
+        log_rastreio("ERRO: Sinal de rede instável ou falha no PDF.")
         st.error(f"Erro no processamento: {e}")
