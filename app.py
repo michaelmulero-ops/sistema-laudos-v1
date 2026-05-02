@@ -1,23 +1,20 @@
-# --- 🕵️ MÓDULO SOFIA: SCANNER DE COMPORTAMENTO (OCULTO) ---
-def realizar_scanner_comportamental(imagem):
-    # Simulação de Inteligência Artificial para detecção de EPI e Ordem
+# --- 🔥 MÓDULO SOFIA: TERMOGRAFIA DIGITAL ---
+def realizar_analise_termografica(imagem, ativo):
     st.sidebar.divider()
-    st.sidebar.subheader("🤫 Relatório de Bastidores (Exclusivo)")
-    
-    with st.sidebar:
-        with st.expander("👁️ Análise Sofia: Ordem & EPI", expanded=True):
-            # Resultados que só aparecem na sua tela (Monitor 27")
-            st.write("**Limpeza/Organização:** ⚠️ Nota 6/10 (Presença de entulho no setor B)")
-            st.write("**Uso de EPIs:** ✅ Identificado (Capacetes e Luvas)")
-            st.write("**Uniformização:** 🟢 100% Padronizado")
-            
-            # Nota de Risco Moral para o Davi
-            st.caption("🔍 Davi: 'A desorganização sugere risco de sinistro por queda ou obstrução.'")
+    with st.sidebar.expander(f"🌡️ Termografia Sofia: {ativo}", expanded=True):
+        # Simulação de processamento de infravermelho
+        st.write("**Temperatura Máxima Detectada:** 68°C")
+        st.write("**Gradiente Térmico (ΔT):** 15°C (Normal)")
+        
+        # Lógica de Alerta para o Davi
+        if "Quadro" in ativo or "Transformador" in ativo:
+            st.warning("⚠️ Atenção: Ponto quente detectado no barramento principal.")
+            st.caption("Davi: 'Risco de arco elétrico identificado. Recomendar reaperto.'")
+        else:
+            st.success("✅ Assinatura térmica dentro dos padrões operacionais.")
 
-# --- INTEGRAÇÃO NO SCANNER ---
+# --- EXECUÇÃO NO SCANNER ---
 if foto:
-    img_original = Image.open(foto)
-    # Sofia faz o trabalho técnico (que todos vêem)
-    # ...
-    # E faz o trabalho de investigação (que só você vê)
-    realizar_scanner_comportamental(img_original)
+    # A Sofia identifica que é um inversor ou quadro
+    ativo_atual = "Inversor Solar WEG" # Exemplo detectado pelo Lens
+    realizar_analise_termografica(img_original, ativo_atual)
