@@ -1,33 +1,43 @@
-# --- 🚀 MÓDULO: FLUXOGRAMA INTELIGENTE 3D ---
-def gerar_fluxograma_3d(lista_equipamentos):
-    st.subheader("📊 Fluxograma Inteligente de Processo (Visão 3D)")
+# --- 🌀 MÓDULO: FLUXO PRODUTIVO COM REALIDADE AUMENTADA ---
+def fluxograma_ra_3d(etapas_processo):
+    st.markdown("## 🛰️ Interface de Fluxo Produtivo Interativo (RA)")
     
-    # Criamos uma representação visual do fluxo
-    cols = st.columns(len(lista_equipamentos))
+    # Criando o cenário 3D simplificado em colunas interativas
+    cols = st.columns(len(etapas_processo))
     
-    for i, eq in enumerate(lista_equipamentos):
+    for i, etapa in enumerate(etapas_processo):
         with cols[i]:
-            # Moldura do Equipamento no Fluxo
-            st.markdown(f"**Etapa {i+1}**")
-            st.image(eq['foto'], caption=eq['nome'], use_container_width=True)
+            # Elemento Visual do Fluxo
+            cor_status = "🔴" if etapa['alerta'] else "🟢"
+            st.info(f"**{i+1}. {etapa['nome']}** {cor_status}")
             
-            # Dados de Risco integrados ao quadro
-            st.caption(f"⚙️ {eq['capacidade']}")
-            if eq['risco'] == "Alto":
-                st.error(f"⚠️ {eq['norma']}")
-            else:
-                st.success(f"✅ {eq['norma']}")
+            # Efeito de Realidade Aumentada (Hover/Expander)
+            with st.popover(f"🔍 Ver Detalhes RA"):
+                st.image(etapa['foto_lens'], caption=f"Ativo: {etapa['equipamento']}")
+                st.write(f"**Capacidade:** {etapa['info_tecnica']}")
+                st.write(f"**Normas:** {etapa['nrs']}")
+                st.divider()
+                st.caption(f"🛡️ Investigação 5 anos: {etapa['historico']}")
             
-            # Seta de conexão (exceto no último)
-            if i < len(lista_equipamentos) - 1:
-                st.write("➡️")
+            # Conexão de Fluxo (Seta Inteligente)
+            if i < len(etapas_processo) - 1:
+                st.markdown("<h1 style='text-align: center;'>➡️</h1>", unsafe_allow_html=True)
 
-# Exemplo de uso no seu monitor de 27"
-equipamentos_teste = [
-    {"nome": "Entrada Insumos", "foto": "https://via.placeholder.com/150", "capacidade": "Silo 50t", "norma": "NR-33", "risco": "Baixo"},
-    {"nome": "Caldeira", "foto": "https://via.placeholder.com/150", "capacidade": "10 ton/h", "norma": "NR-13", "risco": "Alto"},
-    {"nome": "Painel de Controle", "foto": "https://via.placeholder.com/150", "capacidade": "380V", "norma": "NR-10", "risco": "Baixo"}
+# --- DADOS PARA O TESTE EM IBIPORÃ ---
+dados_fluxo = [
+    {
+        "nome": "Recebimento", "equipamento": "Silo de Grãos", 
+        "foto_lens": "https://via.placeholder.com/300x200", 
+        "info_tecnica": "50.000 sacas", "nrs": "NR-33 / NR-10", 
+        "alerta": False, "historico": "Sem sinistros registrados."
+    },
+    {
+        "nome": "Processamento", "equipamento": "Caldeira a Vapor", 
+        "foto_lens": "https://via.placeholder.com/300x200", 
+        "info_tecnica": "20 ton/h", "nrs": "NR-13 (Inspeção em dia)", 
+        "alerta": True, "historico": "Processo cível em 2023 por manutenção."
+    }
 ]
 
-if st.checkbox("Gerar Fluxograma Inteligente"):
-    gerar_fluxograma_3d(equipamentos_teste)
+if st.sidebar.button("Gerar Fluxograma RA 3D"):
+    fluxograma_ra_3d(dados_fluxo)
