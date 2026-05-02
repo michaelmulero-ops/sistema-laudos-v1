@@ -1,13 +1,12 @@
-# --- 📸 MÓDULO DE CAPTURA SOFIA ---
-foto = st.camera_input("Tirar foto para inspeção") # Ou st.file_uploader
+import streamlit as st  # <-- Faltava essa linha para o sistema entender o 'st'
+import time
 
-# A correção é garantir que 'foto' exista antes do 'if'
-if foto is not None:
-    # O sistema só entra aqui se houver uma imagem
-    st.success("Imagem capturada com sucesso!")
-    
-    # Aqui a Sofia e o Davi começam a trabalhar:
-    # 🌡️ Termografia, ❄️ Câmaras Frias, 👮 Segurança 500m...
-    # (Todo o código que montamos antes vai aqui dentro)
-else:
-    st.info("Aguardando captura de imagem para iniciar auditoria técnica.")
+# --- 🛡️ CABEÇALHO TÉCNICO MICHAEL MULERO ---
+st.set_page_config(page_title="Michael Mulero Inspeções Tech V1", layout="wide")
+
+# Agora o comando da linha 2 vai funcionar:
+foto = st.camera_input("Tirar foto para inspeção")
+
+if foto:
+    st.success("Imagem capturada para análise técnica!")
+    # O restante dos módulos (Termografia, Frio, EPI) entra aqui...
