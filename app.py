@@ -1,43 +1,46 @@
-# --- 🌀 MÓDULO: FLUXO PRODUTIVO COM REALIDADE AUMENTADA ---
-def fluxograma_ra_3d(etapas_processo):
-    st.markdown("## 🛰️ Interface de Fluxo Produtivo Interativo (RA)")
+# --- 🏆 SISTEMA ELITE MICHAEL MULERO: FLUXO INVESTIGATIVO ---
+def gerar_fluxo_elite_3d(etapas):
+    st.markdown("## 🛡️ Fluxograma Inteligente Michael Mulero Tech V1")
     
-    # Criando o cenário 3D simplificado em colunas interativas
-    cols = st.columns(len(etapas_processo))
+    # Grid de Realidade Aumentada
+    cols = st.columns(len(etapas))
     
-    for i, etapa in enumerate(etapas_processo):
+    for i, etapa in enumerate(etapas):
         with cols[i]:
-            # Elemento Visual do Fluxo
-            cor_status = "🔴" if etapa['alerta'] else "🟢"
-            st.info(f"**{i+1}. {etapa['nome']}** {cor_status}")
+            # Status Visual baseado na Investigação de 5 Anos
+            cor = "🔴" if etapa['sinistros_5anos'] > 0 else "🟢"
+            st.subheader(f"{i+1}. {etapa['setor']} {cor}")
             
-            # Efeito de Realidade Aumentada (Hover/Expander)
-            with st.popover(f"🔍 Ver Detalhes RA"):
-                st.image(etapa['foto_lens'], caption=f"Ativo: {etapa['equipamento']}")
-                st.write(f"**Capacidade:** {etapa['info_tecnica']}")
-                st.write(f"**Normas:** {etapa['nrs']}")
+            # Interface de RA (Hover Inteligente)
+            with st.popover("📊 Dados de Investigação"):
+                st.image(etapa['foto_lens'], caption=f"Ativo Localizado: {etapa['ativo']}")
                 st.divider()
-                st.caption(f"🛡️ Investigação 5 anos: {etapa['historico']}")
+                st.write(f"**Histórico (2021-2026):** {etapa['resultado_davi']}")
+                st.write(f"**Vistorias Bombeiros:** {etapa['status_bombeiro']}")
+                if etapa['processos_judiciais'] > 0:
+                    st.error(f"⚖️ {etapa['processos_judiciais']} Processos Identificados")
+                else:
+                    st.success("⚖️ Limpo de Processos Relevantes")
             
-            # Conexão de Fluxo (Seta Inteligente)
-            if i < len(etapas_processo) - 1:
-                st.markdown("<h1 style='text-align: center;'>➡️</h1>", unsafe_allow_html=True)
+            # Seta de Fluxo Industrial
+            if i < len(etapas) - 1:
+                st.markdown("<h2 style='text-align: center;'>➔</h2>", unsafe_allow_html=True)
 
-# --- DADOS PARA O TESTE EM IBIPORÃ ---
-dados_fluxo = [
+# Dados de Exemplo para o Contrato em Ibiporã
+processo_industrial = [
     {
-        "nome": "Recebimento", "equipamento": "Silo de Grãos", 
+        "setor": "Captação", "ativo": "Conjunto Motobomba", 
         "foto_lens": "https://via.placeholder.com/300x200", 
-        "info_tecnica": "50.000 sacas", "nrs": "NR-33 / NR-10", 
-        "alerta": False, "historico": "Sem sinistros registrados."
+        "sinistros_5anos": 0, "resultado_davi": "Sem anomalias financeiras.",
+        "status_bombeiro": "AVCB Vigente", "processos_judiciais": 0
     },
     {
-        "nome": "Processamento", "equipamento": "Caldeira a Vapor", 
+        "setor": "Transformação", "ativo": "Subestação/Painéis", 
         "foto_lens": "https://via.placeholder.com/300x200", 
-        "info_tecnica": "20 ton/h", "nrs": "NR-13 (Inspeção em dia)", 
-        "alerta": True, "historico": "Processo cível em 2023 por manutenção."
+        "sinistros_5anos": 1, "resultado_davi": "Dívida Ativa detectada (Risco de Manutenção).",
+        "status_bombeiro": "Ocorrência de Curto em 2023", "processos_judiciais": 2
     }
 ]
 
-if st.sidebar.button("Gerar Fluxograma RA 3D"):
-    fluxograma_ra_3d(dados_fluxo)
+if st.sidebar.button("⚙️ Gerar Fluxo Inteligente"):
+    gerar_fluxo_elite_3d(processo_industrial)
