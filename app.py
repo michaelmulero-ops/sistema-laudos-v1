@@ -1,46 +1,48 @@
-# --- 🏆 SISTEMA ELITE MICHAEL MULERO: FLUXO INVESTIGATIVO ---
-def gerar_fluxo_elite_3d(etapas):
-    st.markdown("## 🛡️ Fluxograma Inteligente Michael Mulero Tech V1")
-    
-    # Grid de Realidade Aumentada
-    cols = st.columns(len(etapas))
-    
-    for i, etapa in enumerate(etapas):
-        with cols[i]:
-            # Status Visual baseado na Investigação de 5 Anos
-            cor = "🔴" if etapa['sinistros_5anos'] > 0 else "🟢"
-            st.subheader(f"{i+1}. {etapa['setor']} {cor}")
-            
-            # Interface de RA (Hover Inteligente)
-            with st.popover("📊 Dados de Investigação"):
-                st.image(etapa['foto_lens'], caption=f"Ativo Localizado: {etapa['ativo']}")
-                st.divider()
-                st.write(f"**Histórico (2021-2026):** {etapa['resultado_davi']}")
-                st.write(f"**Vistorias Bombeiros:** {etapa['status_bombeiro']}")
-                if etapa['processos_judiciais'] > 0:
-                    st.error(f"⚖️ {etapa['processos_judiciais']} Processos Identificados")
-                else:
-                    st.success("⚖️ Limpo de Processos Relevantes")
-            
-            # Seta de Fluxo Industrial
-            if i < len(etapas) - 1:
-                st.markdown("<h2 style='text-align: center;'>➔</h2>", unsafe_allow_html=True)
+import streamlit as st
+import os
 
-# Dados de Exemplo para o Contrato em Ibiporã
-processo_industrial = [
-    {
-        "setor": "Captação", "ativo": "Conjunto Motobomba", 
-        "foto_lens": "https://via.placeholder.com/300x200", 
-        "sinistros_5anos": 0, "resultado_davi": "Sem anomalias financeiras.",
-        "status_bombeiro": "AVCB Vigente", "processos_judiciais": 0
-    },
-    {
-        "setor": "Transformação", "ativo": "Subestação/Painéis", 
-        "foto_lens": "https://via.placeholder.com/300x200", 
-        "sinistros_5anos": 1, "resultado_davi": "Dívida Ativa detectada (Risco de Manutenção).",
-        "status_bombeiro": "Ocorrência de Curto em 2023", "processos_judiciais": 2
+# --- CONFIGURAÇÃO DE EXPORTAÇÃO MICHAEL MULERO ---
+st.markdown("""
+    <style>
+    .croqui-page {
+        width: 600px; /* Simulação do tamanho 10x10 em pixels */
+        height: 600px;
+        border: 2px solid #00FF00;
+        margin-bottom: 50px;
+        padding: 20px;
+        background-color: #1E1E1E;
+        color: white;
     }
+    </style>
+""", unsafe_allow_html=True)
+
+def gerar_laudo_6_paginas(lista_croquis):
+    st.header("📋 Exportação de Laudo Técnico (6 Páginas - 10x10)")
+    
+    for i, croqui in enumerate(lista_croquis):
+        st.write(f"### Página {i+1}: {croqui['titulo']}")
+        
+        # Container que simula a página 10x10
+        with st.container():
+            st.markdown(f'<div class="croqui-page">', unsafe_allow_html=True)
+            st.image(croqui['imagem'], use_container_width=True)
+            st.write(f"**Análise Davi/Sofia:** {croqui['detalhe']}")
+            if 'investigacao' in croqui:
+                st.error(f"🔍 Investigação 5 anos: {croqui['investigacao']}")
+            st.markdown('</div>', unsafe_allow_html=True)
+        
+        st.divider() # Salto de página visual no sistema
+
+# --- EXECUÇÃO DO SISTEMA ---
+# Aqui o sistema puxa os 6 níveis que consolidamos
+meus_croquis = [
+    {"titulo": "Frente à Rua", "imagem": "https://via.placeholder.com/600", "detalhe": "Visão técnica frontal exata."},
+    {"titulo": "Vizinhança", "imagem": "https://via.placeholder.com/600", "detalhe": "Riscos de exposição lateral."},
+    {"titulo": "Ativos Lens", "imagem": "https://via.placeholder.com/600", "detalhe": "Inventário de máquinas NR-10/NR-13."},
+    {"titulo": "Geo-Riscos", "imagem": "https://via.placeholder.com/600", "detalhe": "Análise ambiental e infraestrutura."},
+    {"titulo": "Segurança/Crime", "imagem": "https://via.placeholder.com/600", "detalhe": "Mapa de calor de ocorrências."},
+    {"titulo": "Fluxo 3D Investigativo", "imagem": "https://via.placeholder.com/600", "detalhe": "Processo produtivo com auditoria.", "investigacao": "Sinistros e processos 2021-2026."}
 ]
 
-if st.sidebar.button("⚙️ Gerar Fluxo Inteligente"):
-    gerar_fluxo_elite_3d(processo_industrial)
+if st.button("🚀 Gerar Laudo de 6 Níveis"):
+    gerar_laudo_6_paginas(meus_croquis)
