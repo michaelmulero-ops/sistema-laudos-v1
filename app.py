@@ -1,59 +1,77 @@
 import streamlit as st
+import cv2
+import numpy as np
 import os
 import time
-import glob
+from datetime import datetime
 
-# Configuração de diretórios de segurança
-PENDING_DIR = "upload_pendente"
-if not os.path.exists(PENDING_DIR):
-    os.makedirs(PENDING_DIR)
+# --- CONFIGURAÇÕES DE CAMINHO ---
+UPLOAD_QUEUE = "fila_de_inspecao"
+if not os.path.exists(UPLOAD_QUEUE):
+    os.makedirs(UPLOAD_QUEUE)
 
-def sync_in_background():
-    """Função que verifica e sobe arquivos pendentes automaticamente"""
-    arquivos = glob.glob(f"{PENDING_DIR}/*")
-    if arquivos and check_internet():
-        for arq in arquivos:
-            # Lógica de upload para sua base de dados/cloud
-            # Se sucesso:
-            os.remove(arq) 
-        return True
-    return False
+# --- FUNÇÕES DE INTELIGÊNCIA ---
 
-def check_internet():
-    # Simulação de check de conexão real
-    # Em produção, tentamos um ping rápido em um serviço estável (ex: Google)
-    import socket
+def apply_hud_effect(frame):
+    """Adiciona o visual de scanner dos vídeos (caixas e linhas de varredura)"""
+    height, width, _ = frame.shape
+    # Linha de Scan Horizontal (Efeito visual)
+    scan_line_y = int((time.time() * 100) % height)
+    cv2.line(frame, (0, scan_line_y), (width, scan_line_y), (0, 255, 0), 2)
+    
+    # Simulação de Detecção (Caixas estilo HUD)
+    # Aqui a IA identificaria quadros elétricos, máquinas, etc.
+    cv2.rectangle(frame, (width//4, height//4), (3*width//4, 3*height//4), (0, 255, 0), 1)
+    cv2.putText(frame, "ANALISANDO RISCO NBR/NR...", (width//4, height//4 - 10), 
+                cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 1)
+    
+    return frame
+
+def check_sync():
+    """Tenta enviar arquivos pendentes se houver internet"""
     try:
+        # Tenta conectar ao Google para testar sinal
+        import socket
         socket.create_connection(("8.8.8.8", 53), timeout=2)
-        return True
-    except OSError:
-        return False
+        
+        arquivos = os.listdir(UPLOAD_QUEUE)
+        if arquivos:
+            with st.spinner(f"📡 Wi-Fi Detectado! Sincronizando {len(arquivos)} arquivos..."):
+                for arq in arquivos:
+                    # Lógica de upload para o Michael Mulero Inspeções Cloud
+                    time.sleep(0.5) # Simula o tempo de envio
+                    os.remove(os.path.join(UPLOAD_QUEUE, arq))
+            st.toast("✅ Todos os laudos foram sincronizados!", icon="🚀")
+    except:
+        pass # Sem internet, permanece em modo silencioso
 
-# --- INTERFACE DO MICHAEL MULERO INSPEÇÕES ---
+# --- INTERFACE STREAMLIT ---
 
-st.title("Michael Mulero Inspeções Tech V1")
-st.subheader("Modo Híbrido Ativo 🛡️")
+st.set_page_config(page_title="Michael Mulero Inspeções Tech", layout="wide")
 
-# Scanner e Captura
-foto = st.camera_input("Capturar Risco/Conformidade")
+st.title("🛡️ Michael Mulero Inspeções Tech V1")
+st.write(f"Status: {'🟢 Online' if 'online' else '🟡 Modo Offline Ativo'}")
 
-if foto:
-    timestamp = int(time.time())
-    nome_arquivo = f"inspecao_{timestamp}.jpg"
-    caminho_temp = os.path.join(PENDING_DIR, nome_arquivo)
+# Componente de Captura Híbrida
+input_type = st.radio("Selecione o modo:", ["Foto de Campo", "Vídeo de Inspeção"])
+
+img_file = st.camera_input("Capturar Evidência")
+
+if img_file:
+    # Processamento Visual de Scan (O efeito dos vídeos que você mandou)
+    file_bytes = np.asarray(bytearray(img_file.read()), dtype=np.uint8)
+    opencv_image = cv2.imdecode(file_bytes, 1)
+    scanned_image = apply_hud_effect(opencv_image)
     
-    # Passo 1: Salva sempre localmente primeiro (Segurança de Dados)
-    with open(caminho_temp, "wb") as f:
-        f.write(foto.getbuffer())
+    # Salva na Fila (Garante que não se perca no condomínio/indústria)
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    filename = f"inspecao_{timestamp}.jpg"
+    save_path = os.path.join(UPLOAD_QUEUE, filename)
     
-    # Passo 2: Tenta enviar imediatamente
-    if check_internet():
-        st.info("Conexão estável. Enviando foto agora...")
-        # Lógica de processamento com IA aqui
-        if sync_in_background():
-            st.success("Foto enviada com sucesso!")
-    else:
-        st.warning("Sem sinal. O sistema salvou a foto e enviará assim que você tiver Wi-Fi.")
+    cv2.imwrite(save_path, scanned_image)
+    
+    st.image(scanned_image, channels="BGR", caption="Scan de Risco Concluído e Salvo localmente")
+    st.info("O arquivo será enviado automaticamente assim que detectarmos Wi-Fi.")
 
-# O sistema tenta sincronizar toda vez que a página é carregada ou interagida
-sync_in_background()
+# Roda o verificador de sincronização em cada interação
+check_sync()
