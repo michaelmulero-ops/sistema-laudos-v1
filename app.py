@@ -1,18 +1,17 @@
-# --- 🚒 MÓDULO SOFIA: PROTEÇÃO ATIVA ---
-def realizar_scanner_emergencia(imagem, tipo_item):
+# --- ❄️ MÓDULO SOFIA: AUDITORIA DE REFRIGERAÇÃO ---
+def realizar_scanner_frio(imagem, tipo_ambiente):
     st.sidebar.divider()
-    with st.sidebar.expander(f"🚒 Scanner de Emergência: {tipo_item}", expanded=True):
-        if tipo_item == "Extintor":
-            st.write("**Validade:** ✅ Outubro/2026")
-            st.write("**Pressão:** 🟢 Operacional")
-        elif tipo_item == "Câmera":
-            st.write("**Status:** 📹 Ativa - Gravação em Nuvem")
-            st.write("**Cobertura:** ⚠️ Ponto cego detectado no fundo")
+    with st.sidebar.expander(f"❄️ Auditoria de Frio: {tipo_ambiente}", expanded=True):
+        # Resultados do Scanner Silencioso de Bastidores
+        st.write("**Circulação de Ar:** 🔴 Bloqueada (Mercadoria estampando evaporador)")
+        st.write("**Temperatura do Motor:** 🌡️ 72°C (Ponto quente detectado)")
+        st.write("**Vedação de Porta:** ✅ Borrachas íntegras")
         
-        # Alerta para o Relatório Michael Mulero
-        st.info(f"💡 Davi: 'Equipamento em conformidade com as normas vigentes.'")
+        # Lógica Davi para o Laudo 10x10
+        st.error("🚨 Alerta Davi: Risco de quebra de compressor por esforço excessivo.")
+        st.caption("Investigação 5 Anos: Verificar histórico de manutenção de frio.")
 
-# --- EXECUÇÃO NO SISTEMA ---
+# --- INTEGRAÇÃO NO SCANNER ---
 if foto:
-    # A Sofia identifica o objeto na foto e chama o scanner correto
-    realizar_scanner_emergencia(img_original, "Extintor")
+    # Sofia detecta que entrou em área de câmara fria ou casa de máquinas
+    realizar_scanner_frio(img_original, "Câmara Fria Laticínios")
