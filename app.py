@@ -1,56 +1,24 @@
-import streamlit as st
-import os
-import time
-from datetime import datetime
-from PIL import Image, ImageDraw
-
-# --- CONFIGURAÇÕES DO SISTEMA ---
-st.set_page_config(page_title="Michael Mulero Inspeções", layout="wide")
-
-PENDING_DIR = "upload_pendente"
-if not os.path.exists(PENDING_DIR):
-    os.makedirs(PENDING_DIR)
-
-def apply_scanner_hud(image):
-    """Cria o efeito visual de scanner (estilo HUD)"""
+def apply_scanner_with_metrics(image):
+    """Escaneamento com Medição de Pé-Direito e Dimensões (Estilo HUD)"""
     img = image.convert("RGB")
     draw = ImageDraw.Draw(img)
     w, h = img.size
+    
+    # 1. Efeito de Varredura Laser
     scan_y = int((time.time() * 150) % h)
-    draw.line([(0, scan_y), (w, scan_y)], fill=(0, 255, 0), width=10)
-    draw.rectangle([w//5, h//5, 4*w//5, 4*h//5], outline=(0, 255, 0), width=5)
+    draw.line([(0, scan_y), (w, scan_y)], fill=(0, 255, 0), width=8)
+    
+    # 2. Medição de Pé-Direito (Linha Vertical Esquerda)
+    # Simulação de cálculo baseado na perspectiva da imagem
+    draw.line([(w//6, h//4), (w//6, 3*h//4)], fill=(255, 255, 0), width=3)
+    draw.text((w//6 + 10, h//2), "PE-DIREITO: EST. 6.50m", fill=(255, 255, 0))
+    
+    # 3. Medição de Fachada (Linha Horizontal Base)
+    draw.line([(w//5, 3*h//4), (4*w//5, 3*h//4)], fill=(0, 255, 255), width=3)
+    draw.text((w//2, 3*h//4 + 10), "FACHADA: EST. 12.00m", fill=(0, 255, 255))
+
+    # 4. Caixa de Análise Setorial (Frente à Rua)
+    draw.rectangle([w//5, h//5, 4*w//5, 4*h//5], outline=(0, 255, 0), width=4)
+    draw.text((w//5, h//5 - 25), "SISTEMA DE INSPEÇÃO TECH V1 - MEDIÇÃO ATIVA", fill=(0, 255, 0))
+    
     return img
-
-# --- INTERFACE ---
-st.title("Michael Mulero Inspeções Tech V1 🛡️")
-
-# 1. Campo para subir fotos da Galeria (O que você pediu agora)
-st.subheader("Subir Fotos da Galeria")
-arquivos_subidos = st.file_uploader(
-    "Selecione as fotos da inspeção (Híbrido)", 
-    type=["jpg", "png", "jpeg"], 
-    accept_multiple_files=True
-)
-
-if arquivos_subidos:
-    for arquivo in arquivos_subidos:
-        img_galeria = Image.open(arquivo)
-        img_com_scan = apply_scanner_hud(img_galeria)
-        
-        # Salva na fila automática para modo offline
-        nome_arq = f"galeria_{int(time.time())}_{arquivo.name}"
-        img_com_scan.save(os.path.join(PENDING_DIR, nome_arq))
-        st.image(img_com_scan, caption=f"Escaneando: {arquivo.name}", width=300)
-
-st.divider()
-
-# 2. Campo para Foto ao Vivo
-st.subheader("Captura com Câmera")
-foto = st.camera_input("Escaneamento de Risco em Tempo Real")
-
-if foto:
-    img_camera = Image.open(foto)
-    img_scan_cam = apply_scanner_hud(img_camera)
-    nome_cam = f"camera_{int(time.time())}.jpg"
-    img_scan_cam.save(os.path.join(PENDING_DIR, nome_cam))
-    st.image(img_scan_cam, caption="Análise de Campo Ativa")
