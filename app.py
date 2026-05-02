@@ -1,29 +1,31 @@
-# --- 🎨 ICONOGRAFIA TÁTICA MICHAEL MULERO ---
-def inserir_icones_ra(tipo_risco):
-    if tipo_risco == "criminal":
-        with st.popover("👮 Ver Ocorrências (500m)"):
-            st.error("🚨 2024: Invasão de Perímetro detectada.")
-            st.write("**Impacto:** Risco de dano ao patrimônio.")
-            st.caption("Investigação Davi: 5 anos retroativos.")
-            
-    elif tipo_risco == "climatico":
-        with st.popover("⛈️ Histórico Climático"):
-            st.warning("🌪️ 2023: Vendaval acima de 90km/h.")
-            st.write("**Impacto:** Verificadas avarias no telhado.")
-            st.caption("Fonte: Radares Meteorológicos PR.")
+# --- 📑 CABEÇALHO TÉCNICO: MICHAEL MULERO INSPEÇÕES ---
+def cabecalho_classificacao(cnpj, codigo_manual, atividade):
+    st.markdown(f"""
+        <div style="border: 2px solid #00FF00; padding: 20px; border-radius: 10px; background-color: #0E1117;">
+            <h1 style="color: #00FF00; margin-bottom: 0;">🛡️ MICHAEL MULERO INSPEÇÕES</h1>
+            <p style="font-size: 1.2em; color: white;"><b>RELATÓRIO TÉCNICO DE INSPEÇÃO DE RISCO V1</b></p>
+            <hr style="border-color: #00FF00;">
+            <table style="width: 100%; color: white;">
+                <tr>
+                    <td><b>CNPJ:</b> {cnpj}</td>
+                    <td><b>CÓDIGO DO RISCO:</b> {codigo_manual}</td>
+                </tr>
+                <tr>
+                    <td><b>ATIVIDADE:</b> {atividade}</td>
+                    <td><b>LOCALIDADE:</b> Ibiporã, PR</td>
+                </tr>
+            </table>
+        </div>
+    """, unsafe_allow_html=True)
 
-# --- APLICAÇÃO NAS PÁGINAS 10x10 ---
-col_icones = st.columns(3)
-with col_icones[0]:
-    st.markdown("### 🛡️ Segurança")
-    inserir_icones_ra("criminal")
+# --- INTEGRAÇÃO NO SISTEMA ---
+# Exemplo puxando do seu manual de códigos
+with st.container():
+    cabecalho_classificacao(
+        cnpj="00.000.000/0001-00", 
+        codigo_manual="IND-AL-05 (Industrial Alimentício)", 
+        atividade="Produção e Envase de Óleos Vegetais"
+    )
 
-with col_icones[1]:
-    st.markdown("### 🌊 Ambiental")
-    inserir_icones_ra("climatico")
-
-with col_icones[2]:
-    st.markdown("### ⚙️ Industrial")
-    # Ícone para o Fluxo 3D
-    with st.popover("🚒 Bombeiros"):
-        st.success("✅ AVCB regularizado até 2027.")
+st.divider()
+st.info("💡 **Davi Informa:** Classificação conforme Manual de Riscos Sênior. Normativos aplicáveis: NR-10, NR-13 e NBR-5410.")
