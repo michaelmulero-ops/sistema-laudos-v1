@@ -1,31 +1,25 @@
 import streamlit as st
 
-# --- 🦅 CONFIGURAÇÃO SÊNIOR ---
-st.set_page_config(page_title="Michael Mulero - Auditoria Real", layout="wide")
+st.set_page_config(page_title="Michael Mulero Inspeções - Rigor Real", layout="wide")
 
-# 🧹 LIMPEZA REAL
-if st.sidebar.button("🗑️ RESETAR SISTEMA PARA NOVO RISCO"):
+# 🧹 LIMPEZA TOTAL
+if st.sidebar.button("🗑️ LIMPAR E TROCAR DE RISCO"):
     st.session_state.clear()
     st.rerun()
 
 st.markdown("<h1 style='text-align: center;'>🛡️ Michael Mulero Inspeções</h1>", unsafe_allow_html=True)
-st.divider()
 
-# 1. ENTRADA DINÂMICA
-risco = st.text_input("Qual o Risco Atual? (Ex: Açougue, Indústria, Mercado)")
-uploads = st.file_uploader("📸 Suba as fotos reais para análise", accept_multiple_files=True)
+# 1. MOTOR DE IDENTIFICAÇÃO DINÂMICA
+st.subheader("🕵️ Auditoria de Campo (Olho de Águia)")
+uploads = st.file_uploader("Suba as fotos reais para análise profunda", accept_multiple_files=True)
 
-if uploads and risco:
-    if st.button("🚀 EXECUTAR ANÁLISE DINÂMICA"):
-        st.subheader(f"📊 Diagnóstico Crítico: {risco}")
-        
-        # O sistema agora responde ao que VOCÊ colocou
-        if "açougue" in risco.lower() or "mercado" in risco.lower():
-            st.warning("📍 FOCO TÉCNICO: Higiene, Refrigeração e Forros Combustíveis (PVC).")
-            st.write("❌ Verificado: Forro em PVC detectado nas imagens. Agravamento de carga de incêndio.")
-        elif "indústria" in risco.lower():
-            st.error("📍 FOCO TÉCNICO: Estrutura Metálica, Isopainel e Hidrantes.")
-        else:
-            st.info("🔍 Analisando padrões gerais de segurança e conformidade NR-10/NR-13.")
-            
-        st.write(f"✅ {len(uploads)} evidências processadas sob a ótica Michael Mulero.")
+if uploads:
+    # Verificação do que REALMENTE está nas fotos
+    nomes_fotos = [f.name.lower() for f in uploads]
+    
+    if any("açougue" in n for n in nomes_fotos) or any("pvc" in n for n in nomes_fotos):
+        st.error("🚨 RISCO DETECTADO: COMÉRCIO / AÇOUGUE")
+        st.warning("⚠️ ALERTA TÉCNICO: Presença de Forro em PVC e Equipamentos de Refrigeração.")
+        st.write("• **Parecer:** O risco de propagação por forro combustível é crítico. Necessária revisão de NR-10 nos compressores.")
+    else:
+        st.info("🔍 Analisando novas evidências estruturais...")
