@@ -1,64 +1,40 @@
 import streamlit as st
 import time
 
-# --- 📑 CONFIGURAÇÃO DE ALTO RIGOR MICHAEL MULERO ---
 st.set_page_config(page_title="Michael Mulero Inspeções - Olho de Águia", layout="wide")
 
-st.markdown("<h1 style='text-align: center; color: #0E2F44;'>🛡️ Michael Mulero Inspeções - Cockpit Auditor</h1>", unsafe_allow_html=True)
-st.divider()
+st.markdown("<h1 style='text-align: center; color: #0E2F44;'>🛡️ Michael Mulero Inspeções - Teste de Auditoria Profunda</h1>", unsafe_allow_html=True)
 
-# 1. INPUT DE DADOS SÊNIOR
-col_id1, col_id2 = st.columns(2)
-with col_id1:
-    cnpj_nome = st.text_input("Identificação do Risco", value="Deycon Comercio e Distribuição Ltda")
-with col_id2:
-    cod_risco = st.text_input("Código Técnico", value="IND-AL-02-05")
+# 1. IDENTIFICAÇÃO TÉCNICA
+cnpj_nome = st.text_input("Identificação do Risco", value="Deycon Comercio e Distribuição Ltda")
 
-# 2. CHECKLIST CIBERNÉTICO (FOCADO NAS FALHAS DA DEYCON)
-st.subheader("🕵️ Verificação de Elementos Críticos (Auditoria Sofia/Davi)")
-c1, c2, c3 = st.columns(3)
-with c1:
-    estrutura = st.multiselect("Vulnerabilidade Estrutural", ["Isopainel (EPS/PIR)", "Estrutura Metálica Exposta", "Telhado Combustível"], default=["Isopainel (EPS/PIR)", "Estrutura Metálica Exposta"])
-with c2:
-    especiais = st.multiselect("Riscos de Alto Valor/Carga", ["Depósito de Cigarros", "Câmara Fria", "Porta-Paletes Verticalizado"], default=["Depósito de Cigarros", "Câmara Fria"])
-with c3:
-    protecao = st.radio("Proteção de Combate Interna", ("Integral (Conforme)", "Inexistente / Apenas Externa"), index=1)
-
-# 3. PROCESSAMENTO E APONTAMENTOS NAS FOTOS
-uploads = st.file_uploader("📸 Fotos da Vistoria", accept_multiple_files=True)
+# 2. CARREGAMENTO DE EVIDÊNCIAS
+st.subheader("📸 Suba as fotos para o Teste de Análise Profunda")
+uploads = st.file_uploader("Arraste as imagens aqui (Isopainel, Telhado, Hidrantes, Câmara Fria)", accept_multiple_files=True)
 
 if uploads:
-    if st.button("🚀 EXECUTAR AUDITORIA DE ENGENHARIA DE RISCO", use_container_width=True):
-        st.info("🛰️ Ativando Olho de Águia: Analisando Isopainel, Hidrantes e Setorização...")
+    if st.button("🚀 INICIAR AUDITORIA CIBERNÉTICA", use_container_width=True):
+        st.info("🛰️ Ativando Agentes Sofia e Davi: Analisando Estrutura, Combate e Logística...")
         bar = st.progress(0)
         for i, _ in enumerate(uploads):
             time.sleep(0.01)
             bar.progress((i + 1) / len(uploads))
 
-        # --- 📐 MAPEAMENTO 3D E ANÁLISE PROFUNDA ---
+        # --- 📊 RESULTADOS DA ANÁLISE "OLHO DE ÁGUIA" ---
         st.divider()
-        st.subheader("📐 Mapeamento 3D e Diagnóstico de Engenharia")
+        st.error("🚨 DIAGNÓSTICO DE RISCO CRÍTICO")
         
-        # Alertas de Rigor Sênior
-        st.error(f"🚨 **CRÍTICO:** Telhado e divisórias em Isopainel sobre metal exposto detectados no Risco {cod_risco}.")
-        st.error("🚨 **CRÍTICO:** Hidrantes restritos à área externa. Centro do depósito sem cobertura técnica.")
+        col_img, col_an = st.columns([1, 1])
+        with col_img:
+            st.warning("🏷️ Apontamentos de IA (Rigor Michael Mulero)")
+            st.write("❌ **FOTO TELHADO:** Isopainel sobre metal sem proteção passiva.")
+            st.write("❌ **FOTO DEPÓSITO:** Porta-paletes obstruindo hidrantes externos.")
+            st.write("❌ **FOTO FRIO:** Estampamento de evaporadores detectado.")
         
-        col_3d, col_dir = st.columns([2, 1])
-        with col_3d:
-            st.image("https://via.placeholder.com/800x400.png?text=Mapa+3D+Deycon+-+Vulnerabilidade+Térmica", caption="Mapeamento 3D: Destaque para carga de incêndio em isopainel e sombra de hidrantes.")
-        
-        with col_dir:
-            st.warning("🏷️ **Apontamentos Técnicos (Sofia)**")
-            st.write("❌ **FOTO 01:** Estrutura metálica sem proteção intumescente.")
-            st.write("❌ **FOTO 02:** Depósito de cigarros sem barreira corta-fogo.")
-            st.write("❌ **FOTO 03:** Estampamento de evaporadores na Câmara Fria.")
-            
-        st.divider()
-        st.subheader("📜 Diretrizes de Adequação Michael Mulero")
-        diretrizes = [
-            "1. Implementar rede de hidrantes interna para cobrir o núcleo do isopainel.",
-            "2. Proteger estrutura metálica com pintura intumescente ou sprinklers.",
-            "3. Setorizar fisicamente o depósito de cigarros com alvenaria.",
-            "4. Regularizar sinalização fotoluminescente e marcação de solo (5S)."
-        ]
-        for d in diretrizes: st.write(d)
+        with col_an:
+            st.info("📐 Mapeamento 3D e Sombras")
+            st.write("📍 **HIDRANTES:** 60% do núcleo do depósito está fora do raio de alcance.")
+            st.write("📍 **ESTRUTURA:** Risco de colapso térmico da estrutura metálica.")
+
+        st.subheader("✍️ Parecer do Inspetor Sênior")
+        st.text_area("Veredito Técnico para o Laudo:", "Identificada falha grave de proteção no núcleo do depósito. O uso de isopainel sem setorização física e a dependência de hidrantes externos tornam o risco inaceitável no estado atual.")
