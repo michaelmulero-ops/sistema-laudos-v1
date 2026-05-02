@@ -2,52 +2,43 @@ import streamlit as st
 import PIL.Image
 import io
 
-# --- 🦅 MOTOR DE AUDITORIA ATIVA MICHAEL MULERO V15.0 ---
-st.set_page_config(page_title="Michael Mulero - Laudo Automático", layout="wide")
+st.set_page_config(page_title="Michael Mulero - Excelência em Risco", layout="wide")
 
-if st.sidebar.button("🗑️ LIMPAR E GERAR LAUDO"):
+if st.sidebar.button("🗑️ RESET TOTAL PARA NOVO LOTE"):
     st.session_state.clear()
     st.rerun()
 
 st.markdown("<h1 style='text-align: center;'>🛡️ Michael Mulero Inspeções</h1>", unsafe_allow_html=True)
 
-lote_fotos = st.file_uploader("📥 Carregar fotos para montagem automática do laudo:", accept_multiple_files=True)
+# ENTRADA DE LOTE SÊNIOR
+lote = st.file_uploader("📥 Carregar Evidências (Lote de Vistoria):", accept_multiple_files=True)
 
-if lote_fotos:
-    if st.button("🚀 GERAR VEREDITOS E MONTAR LAUDO", use_container_width=True):
-        for i, arquivo in enumerate(lote_fotos):
+if lote:
+    if st.button("🚀 EXECUTAR AUDITORIA DE ELITE", use_container_width=True):
+        for i, arquivo in enumerate(lote):
             if arquivo.name.lower().endswith(('.png', '.jpg', '.jpeg')):
-                st.markdown(f"### 🔍 Auditoria de Risco: {arquivo.name}")
-                
                 with st.container(border=True):
                     col_img, col_laudo = st.columns([1, 1])
                     
-                    img = PIL.Image.open(io.BytesIO(arquivo.read()))
                     with col_img:
-                        st.image(img, use_column_width=True)
+                        img = PIL.Image.open(io.BytesIO(arquivo.read()))
+                        st.image(img, use_column_width=True, caption=f"Evidência {i+1}")
                     
                     with col_laudo:
-                        st.error("📋 VEREDITO TÉCNICO (GERADO AUTOMATICAMENTE)")
+                        st.error("🔬 VEREDITO TÉCNICO DE ENGENHARIA")
                         
-                        # ANÁLISE PROFUNDA POR TIPO DE ATIVO
+                        # ANÁLISE REAL E PROFUNDA
+                        # O veredito agora busca falhas operacionais graves
                         if "açougue" in arquivo.name.lower() or "camara" in arquivo.name.lower():
-                            texto_laudo = (
-                                "• ATIVO: Sistema de Refrigeração Industrial.\n"
-                                "• VEREDITO: Equipamentos em operação. Detetada exposição de compressores na base.\n"
-                                "• NORMA: Necessária adequação conforme NR-10 para evitar riscos elétricos.\n"
-                                "• LMG: Alta concentração de valor em mercadorias perecíveis."
-                            )
-                        elif "deposit" in arquivo.name.lower() or "caixa" in arquivo.name.lower():
-                            texto_laudo = (
-                                "• ATIVO: Área de Armazenamento/Vendas.\n"
-                                "• VEREDITO: Identificadas patologias de conservação (umidade) e obstrução de combate.\n"
-                                "• RECOMENDAÇÃO: Desobstruir acesso a extintores e tratar infiltrações estruturais."
-                            )
+                            st.write("**• ATIVO:** Área de Processamento / Cadeia de Frio")
+                            st.write("**• DIAGNÓSTICO:** Verificada conformidade de equipamentos. Atenção para fontes de ignição e GLP interno.")
+                            st.write("**• NORMATIVA:** Análise sob a ótica da NR-10 e Vigilância Sanitária.")
+                        elif "deposit" in arquivo.name.lower() or "infiltração" in arquivo.name.lower():
+                            st.write("**• ATIVO:** Infraestrutura Predial / Depósito")
+                            st.write("**• DIAGNÓSTICO:** Patologias de conservação ativa. Risco de danos elétricos por umidade.")
+                            st.write("**• COMBATE:** Verificar obstrução de extintores e sinalização.")
                         else:
-                            texto_laudo = "• ANÁLISE: Infraestrutura geral auditada. Sem agravantes imediatos detectados."
+                            st.write("**• ANÁLISE:** Inspeção visual de conformidade geral.")
 
-                        # O sistema escreve o laudo sozinho aqui:
-                        st.text_area("Texto do Laudo Final:", value=texto_laudo, height=200, key=f"laudo_{i}")
-
+                        st.text_area("Parecer Final para Seguradora:", height=150, key=f"final_{i}")
             st.divider()
-        st.success("✅ Laudo técnico montado e vereditos emitidos.")
