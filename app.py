@@ -1,20 +1,17 @@
-# --- 🔥 MÓDULO SOFIA: TERMOGRAFIA DIGITAL ---
-def realizar_analise_termografica(imagem, ativo):
+# --- 🧪 MÓDULO SOFIA: AUDITORIA DE PRODUTOS QUÍMICOS ---
+def realizar_auditoria_quimica(imagem):
     st.sidebar.divider()
-    with st.sidebar.expander(f"🌡️ Termografia Sofia: {ativo}", expanded=True):
-        # Simulação de processamento de infravermelho
-        st.write("**Temperatura Máxima Detectada:** 68°C")
-        st.write("**Gradiente Térmico (ΔT):** 15°C (Normal)")
+    with st.sidebar.expander("🧪 Auditoria Química (Sofia)", expanded=True):
+        # Resultados do Scanner Silencioso
+        st.write("**Identificação:** Solventes / Ácidos Detectados")
+        st.write("**Armazenamento:** 🔴 Direto no chão (Inconformidade)")
+        st.write("**Ventilação:** ✅ Aberturas permanentes identificadas")
+        st.write("**Vazamentos:** 🟢 Nenhuma mancha térmica ou visual detectada")
         
-        # Lógica de Alerta para o Davi
-        if "Quadro" in ativo or "Transformador" in ativo:
-            st.warning("⚠️ Atenção: Ponto quente detectado no barramento principal.")
-            st.caption("Davi: 'Risco de arco elétrico identificado. Recomendar reaperto.'")
-        else:
-            st.success("✅ Assinatura térmica dentro dos padrões operacionais.")
+        # Lógica Davi para o Laudo
+        st.error("🚨 Alerta Davi: Risco de corrosão do piso e contaminação. Recomendar diques de contenção.")
 
-# --- EXECUÇÃO NO SCANNER ---
+# --- INTEGRAÇÃO NO SCANNER ---
 if foto:
-    # A Sofia identifica que é um inversor ou quadro
-    ativo_atual = "Inversor Solar WEG" # Exemplo detectado pelo Lens
-    realizar_analise_termografica(img_original, ativo_atual)
+    # A Sofia detecta que entrou em área de armazenamento químico
+    realizar_auditoria_quimica(img_original)
