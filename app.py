@@ -1,63 +1,45 @@
 import streamlit as st
 import time
 
-# --- 📑 CONFIGURAÇÃO CENTRAL MICHAEL MULERO ---
-st.set_page_config(page_title="Michael Mulero Inspeções - Cockpit Sênior", layout="wide")
+st.set_page_config(page_title="Michael Mulero Inspeções - Rigor Sênior", layout="wide")
 
-# 1. IDENTIDADE E CABEÇALHO
+# 1. CABEÇALHO OFICIAL
 st.markdown("<h1 style='text-align: center;'>🛡️ Michael Mulero Inspeções</h1>", unsafe_allow_html=True)
-col_info1, col_info2 = st.columns(2)
-with col_info1:
-    cnpj_nome = st.text_input("CNPJ/Risco", value="Deycon Comercio e Distribuição Ltda")
-with col_info2:
-    cod_risco = st.text_input("Código", value="IND-AL-02-05")
-
 st.divider()
 
-# 2. ENTRADA DE EVIDÊNCIAS
-uploads = st.file_uploader("📸 Upload de Evidências (Fotos/Vídeos)", accept_multiple_files=True)
-
-# 3. CHECKLIST TÉCNICO DE CAMPO (RIGOR SÊNIOR)
-st.subheader("🕵️ Auditoria de Infraestrutura")
+# 2. CHECKLIST DE ENGENHARIA PROFUNDA
+st.subheader("🕵️ Auditoria de Campo: Elementos de Risco")
 c1, c2, c3 = st.columns(3)
 with c1:
-    iso = st.radio("Estrutura de Isopainel?", ("Não detectado", "Sim - EPS/PIR"), index=1)
+    cobertura = st.multiselect("Estrutura/Vedações", ["Isopainel", "Estrutura Metálica", "Alvenaria"], default=["Isopainel", "Estrutura Metálica"])
 with c2:
-    hid_int = st.radio("Hidrantes Internos?", ("Sim - Cobertura Total", "Inexistente / Apenas Externo"), index=1)
+    setores_especiais = st.multiselect("Áreas Críticas", ["Depósito de Cigarro", "Câmara Fria", "Porta-Paletes"], default=["Depósito de Cigarro", "Câmara Fria"])
 with c3:
-    setor = st.radio("Setorização de Risco?", ("Definida", "Áreas Misturadas"), index=1)
+    combate = st.radio("Sinalização/Hidrantes Internos", ("Conforme", "Inexistente / Apenas Externo"), index=1)
 
-# 4. MOTOR DE PROCESSAMENTO E MAPEAMENTO
+# 3. MOTOR DE ANÁLISE DE IMAGEM (APONTAMENTOS)
+uploads = st.file_uploader("📸 Fotos da Vistoria", accept_multiple_files=True)
+
 if uploads:
-    if st.button("🚀 GERAR ANÁLISE 3D E APONTAMENTOS", use_container_width=True):
-        bar = st.progress(0)
+    if st.button("🚀 EXECUTAR ANÁLISE PROFUNDA E MAPA 3D", use_container_width=True):
+        st.info("🔍 Sofia analisando prateleiras, isopainel e hidrantes...")
+        progress = st.progress(0)
         for i, _ in enumerate(uploads):
             time.sleep(0.01)
-            bar.progress((i + 1) / len(uploads))
-        
-        # --- 🌐 MAPEAMENTO 3D E CROQUI DE ENGENHARIA ---
-        st.divider()
-        st.subheader("📐 Mapeamento 3D e Delimitação Setorial")
-        
-        # Simulação visual da volumetria (Frente à Rua)
-        st.markdown("<div style='border: 2px solid red; padding: 15px; background-color: #FFF5F5;'>"
-                    "<b>⚠️ VULNERABILIDADE ESTRUTURAL:</b> Núcleo do depósito sem cobertura de hidrantes.<br>"
-                    "<b>🔥 ALERTA DE CARGA:</b> Divisórias em Isopainel agravam potencial de sinistro.</div>", unsafe_allow_html=True)
-        
-        # Croqui Visual
-        col_v, col_m = st.columns([1, 4])
-        with col_m:
-            st.code("""
-            [ VIZINHO ] | [  🟡 ÁREA AMARELA - DEYCON  ] | [ VIZINHO ]
-                       | (Divisórias Isopainel)      |
-                       | [H] <- Hidrantes Externos   |
-            __________________________________________________________
-                                [ RUA PRINCIPAL ]
-            """, language="text")
+            progress.progress((i + 1) / len(uploads))
 
-        # --- 🏷️ APONTAMENTOS NAS FOTOS (DIRETRIZES) ---
-        st.subheader("📋 Diretrizes de Engenharia de Risco")
-        st.error("❌ HIDRANTES: Proteção restrita à área externa. Vulnerabilidade total no acervo central.")
-        st.error("❌ ESTRUTURA: Isopainel detectado. Alto risco de propagação rápida.")
+        # --- 📐 RESULTADO DA ANÁLISE VISUAL ---
+        st.subheader("📊 Apontamentos Técnicos e Mapa 3D")
         
-        st.info("💡 RECOMENDAÇÃO: Instalar rede de hidrantes interna e substituir vedações por material incombustível.")
+        # Simulação do Mapeamento 3D Priorizando Frente à Rua
+        st.error("⚠️ FALHA TÉCNICA: Telhado em Isopainel sobre Estrutura Metálica sem proteção.")
+        st.warning("📍 DEPÓSITO CIGARRO: Risco especial sem setorização física.")
+        
+        col_img1, col_img2 = st.columns(2)
+        with col_img1:
+            st.image("https://via.placeholder.com/600x300.png?text=Mapa+3D+Deycon+-+Visao+Frontal", caption="Mapa 3D: Vermelho indica vulnerabilidade térmica no telhado.")
+        with col_img2:
+            st.markdown("### 📋 Diretrizes Michael Mulero:")
+            st.write("• **Telhado:** Necessária aplicação de pintura intumescente na estrutura metálica.")
+            st.write("• **Hidrantes:** Proteção externa é insuficiente para o núcleo do isopainel.")
+            st.write("• **Logística:** Corrigir estampamento de motores na câmara fria.")
