@@ -1,46 +1,23 @@
-import streamlit as st
-import os
-import time
-from datetime import datetime
-from PIL import Image, ImageDraw
+# --- NOVO CAMPO PARA SUBIR FOTOS DA GALERIA/PC ---
+st.subheader("Subir Fotos da Galeria")
+arquivos_subidos = st.file_uploader(
+    "Selecione as fotos da inspeção (Híbrido)", 
+    type=["jpg", "png", "jpeg"], 
+    accept_multiple_files=True
+)
 
-# Configurações de Marca e Diretórios
-st.set_page_config(page_title="Michael Mulero Inspeções", layout="wide")
-PENDING_DIR = "upload_pendente"
-if not os.path.exists(PENDING_DIR):
-    os.makedirs(PENDING_DIR)
+if arquivos_subidos:
+    for arquivo in arquivos_subidos:
+        img_galeria = Image.open(arquivo)
+        img_com_scan_galeria = apply_scanner_hud(img_galeria)
+        
+        # Salva na fila para sincronização automática
+        nome_arq_galeria = f"galeria_{int(time.time())}_{arquivo.name}"
+        caminho_galeria = os.path.join(PENDING_DIR, nome_arq_galeria)
+        img_com_scan_galeria.save(caminho_galeria)
+        
+        st.image(img_com_scan_galeria, caption=f"Escaneando: {arquivo.name}", width=300)
 
-def apply_scanner_hud(image):
-    """Cria o efeito visual de scanner (estilo HUD) sem erros técnicos"""
-    img = image.convert("RGB")
-    draw = ImageDraw.Draw(img)
-    w, h = img.size
-    # Linha de Scan Verde
-    scan_y = int((time.time() * 150) % h)
-    draw.line([(0, scan_y), (w, scan_y)], fill=(0, 255, 0), width=10)
-    # Caixa de Análise Técnica
-    draw.rectangle([w//5, h//5, 4*w//5, 4*h//5], outline=(0, 255, 0), width=5)
-    return img
-
-st.title("Michael Mulero Inspeções Tech V1 🛡️")
-st.subheader("Sistema Híbrido: Online/Offline Ativo")
-
-# Captura de Campo
-foto = st.camera_input("Escaneamento de Risco (Foto/Vídeo)")
-
-if foto:
-    img_original = Image.open(foto)
-    img_com_scan = apply_scanner_hud(img_original)
-    
-    # Salva sempre localmente (Modo Indústria/Condomínio)
-    nome_arq = f"inspecao_{int(time.time())}.jpg"
-    caminho = os.path.join(PENDING_DIR, nome_arq)
-    img_com_scan.save(caminho)
-    
-    st.image(img_com_scan, caption="Análise Técnica em Processamento...")
-    st.success(f"Captura salva! Sincronização automática ativa.")
-
-# Verificador de Sincronismo (Roda sempre que a página carrega)
-arquivos_na_fila = os.listdir(PENDING_DIR)
+st.divider() # Separa a Galeria da Câmera ao vivo)
 if arquivos_na_fila:
     st.info(f"Existem {len(arquivos_na_fila)} inspeções aguardando sinal de Wi-Fi.")
