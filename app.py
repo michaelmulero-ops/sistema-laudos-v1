@@ -1,21 +1,33 @@
-# --- MÓDULO DAVI: FLUXO PRODUTIVO INDUSTRIAL ---
-with st.sidebar:
-    st.divider()
-    st.subheader("🏭 Descritivo de Processo Produtivo")
-    audio_notes = st.text_area("Notas de Áudio/Entrevista", placeholder="Descreva o que o segurado explicou sobre a produção...")
+# --- 🚀 MÓDULO: FLUXOGRAMA INTELIGENTE 3D ---
+def gerar_fluxograma_3d(lista_equipamentos):
+    st.subheader("📊 Fluxograma Inteligente de Processo (Visão 3D)")
     
-    if st.button("Gerar Fluxograma Técnico"):
-        if audio_notes:
-            with st.spinner("Davi estruturando o processo produtivo..."):
-                time.sleep(2)
-                st.info("📊 **Fluxo Identificado:** Insumos -> Processamento Térmico -> Acabamento -> Expedição")
-                st.success("✅ Descritivo técnico gerado para o laudo final.")
-        else:
-            st.warning("Por favor, insira as notas do processo.")
+    # Criamos uma representação visual do fluxo
+    cols = st.columns(len(lista_equipamentos))
+    
+    for i, eq in enumerate(lista_equipamentos):
+        with cols[i]:
+            # Moldura do Equipamento no Fluxo
+            st.markdown(f"**Etapa {i+1}**")
+            st.image(eq['foto'], caption=eq['nome'], use_container_width=True)
+            
+            # Dados de Risco integrados ao quadro
+            st.caption(f"⚙️ {eq['capacidade']}")
+            if eq['risco'] == "Alto":
+                st.error(f"⚠️ {eq['norma']}")
+            else:
+                st.success(f"✅ {eq['norma']}")
+            
+            # Seta de conexão (exceto no último)
+            if i < len(lista_equipamentos) - 1:
+                st.write("➡️")
 
-# --- VISUALIZAÇÃO NO RELATÓRIO ---
-if audio_notes:
-    st.markdown("### 🛠️ Análise do Processo Produtivo")
-    # O Davi cruza o que ouviu com as fotos do Lens
-    st.write(f"**Descrição Estruturada:** Baseado nos ativos identificados (Caldeiras/Painéis) e no relato colhido, o processo produtivo apresenta riscos inerentes à **{audio_notes.split()[0]}**.")
-    st.caption("Investigação de 5 anos: Histórico de manutenção condizente com a complexidade do processo.")
+# Exemplo de uso no seu monitor de 27"
+equipamentos_teste = [
+    {"nome": "Entrada Insumos", "foto": "https://via.placeholder.com/150", "capacidade": "Silo 50t", "norma": "NR-33", "risco": "Baixo"},
+    {"nome": "Caldeira", "foto": "https://via.placeholder.com/150", "capacidade": "10 ton/h", "norma": "NR-13", "risco": "Alto"},
+    {"nome": "Painel de Controle", "foto": "https://via.placeholder.com/150", "capacidade": "380V", "norma": "NR-10", "risco": "Baixo"}
+]
+
+if st.checkbox("Gerar Fluxograma Inteligente"):
+    gerar_fluxograma_3d(equipamentos_teste)
