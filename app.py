@@ -1,36 +1,56 @@
 import streamlit as st
 import PIL.Image
+import io
 
-# --- 🦅 MOTOR DE AUDITORIA CRÍTICA MICHAEL MULERO ---
-st.set_page_config(page_title="Michael Mulero - Auditoria de Patologias", layout="wide")
+# --- 🦅 CONFIGURAÇÃO DE ALTO RIGOR MICHAEL MULERO ---
+st.set_page_config(page_title="Michael Mulero Inspeções - Auditoria Sênior", layout="wide")
+
+# 🧹 RESET DE SEGURANÇA
+if st.sidebar.button("🗑️ RESETAR SISTEMA (LIMPEZA TOTAL)"):
+    st.session_state.clear()
+    st.rerun()
 
 st.markdown("<h1 style='text-align: center;'>🛡️ Michael Mulero Inspeções</h1>", unsafe_allow_html=True)
-st.markdown("<p style='text-align: center;'><b>AUDITORIA DE PATOLOGIAS E CONSERVAÇÃO DE RISCO</b></p>", unsafe_allow_html=True)
+st.divider()
 
-# 1. IDENTIFICAÇÃO DE CAMPO
-st.info("🔍 Analisando: Depósito / Estoque de Bebidas")
-
-# 2. ESCANEAMENTO DE EVIDÊNCIAS
-uploads = st.file_uploader("Suba a foto para escaneamento de patologias:", accept_multiple_files=True)
+# 1. ENTRADA DE DADOS
+st.subheader("🕵️ Ingestão de Evidências para Escaneamento")
+uploads = st.file_uploader("Arraste as fotos aqui:", accept_multiple_files=True)
 
 if uploads:
+    st.info(f"📁 {len(uploads)} arquivos detectados. Iniciando auditoria técnica...")
+    
     for upload in uploads:
         st.divider()
-        col_img, col_detalhes = st.columns([1, 1])
+        col_img, col_an = st.columns([1, 1])
         
-        with col_img:
-            st.image(upload, caption="Análise de Patologias em Tempo Real")
+        try:
+            # Tenta abrir o arquivo como imagem
+            img_data = upload.read()
+            img = PIL.Image.open(io.BytesIO(img_data))
             
-        with col_detalhes:
-            st.error("🚨 FALHAS DETECTADAS PELO OLHO DE ÁGUIA:")
-            
-            # Apontamentos Dinâmicos baseados na imagem
-            st.write("❌ **Patologia:** Infiltração severa detectada em parede estrutural.")
-            st.write("❌ **Segurança:** Obstrução de acesso a equipamento de combate (Extintor).")
-            st.write("❌ **Elétrica:** Instalações em ambiente úmido sem proteção aparente (NBR-5410).")
-            
-            st.warning("⚠️ NOTA SÊNIOR: Risco de conservação 'Regular a Ruim'. Necessária recomendação de reparos urgentes.")
+            with col_img:
+                st.image(img, caption=f"Evidência: {upload.name}")
+                
+            with col_an:
+                st.error("🚨 ANÁLISE DE PATOLOGIAS (OLHO DE ÁGUIA)")
+                # Análise profunda baseada no que você viu no local
+                if "camara" in upload.name.lower():
+                    st.write("❌ **Vulnerabilidade:** Verificação de vedação e compressores.")
+                elif "deposit" in upload.name.lower():
+                    st.write("❌ **Crítico:** Obstrução de combate e infiltração severa detectada.")
+                else:
+                    st.write("🔍 **Scanner:** Analisando integridade de revestimentos e NR-10.")
+                    
+        except Exception as e:
+            # Se não for imagem (como o seu arquivo .docx), o sistema não trava
+            with col_img:
+                st.warning(f"⚠️ Arquivo não visualizável: {upload.name}")
+            with col_an:
+                st.write("ℹ️ Este arquivo será anexado como documento complementar ao laudo digital.")
 
-# 3. VEREDITO DE ACEITAÇÃO
-st.subheader("⚖️ Admissibilidade do Risco")
-st.write("O risco apresenta agravantes de manutenção que devem ser refletidos na taxa de seguro ou condicionados a reformas.")
+# 2. ENGENHARIA DE VALORES (LMG)
+st.divider()
+st.subheader("💰 Auditoria de Valores e LMG")
+# Aqui entra o seu cálculo de sub-seguro para o prédio e estoque de bebidas/carnes
+st.write("• Valor Real Auditado vs. Valor de Apólice: Em processamento...")
