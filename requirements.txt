@@ -8,4 +8,5 @@ streamlit-folium
 streamlit-js-eval
 plotly
 streamlit-webrtc
+aiortc
 av
