@@ -13,3 +13,5 @@ av
 python-docx
 streamlit
 google-generativeai
+streamlit
+google-generativeai
