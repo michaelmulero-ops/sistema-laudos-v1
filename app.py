@@ -1,67 +1,42 @@
 import streamlit as st
 import plotly.graph_objects as go
 
-# Configuração de Elite
-st.set_page_config(page_title="Michael Mulero | Tech V1", layout="wide")
+# Configuração Michael Mulero Inspeções
+st.set_page_config(page_title="Amostra Técnica | Tech V1", layout="wide")
 
-# --- ESTADOS DO SISTEMA ---
-if 'dados_pedido' not in st.session_state: st.session_state.dados_pedido = {}
-if 'fotos_processadas' not in st.session_state: st.session_state.fotos_processadas = False
+def gerar_amostra_isometrica():
+    fig = go.Figure()
 
-# --- PAINEL DE OPERAÇÃO LATERAL ---
-with st.sidebar:
-    st.header("🕹️ Painel de Comando")
-    
-    # BOTÃO 1: INGESTÃO DO PEDIDO
-    with st.expander("📥 1. INJETAR PEDIDO", expanded=False):
-        pedido_texto = st.text_area("Cole aqui o texto do pedido de serviço:")
-        if st.button("PROCESSAR PEDIDO"):
-            # Lógica para copiar e preencher automaticamente
-            st.session_state.dados_pedido = {"doc": "00.000.000/0001-00", "tipo": "Indústria"}
-            st.success("Dados do pedido extraídos!")
+    # 1. Volumetria do Galpão (Formato 'H' Industrial)
+    fig.add_trace(go.Mesh3d(
+        x=[1, 4, 4, 1, 1, 4, 4, 1, 2.5], 
+        y=[1, 1, 7, 7, 1, 1, 7, 7, 4], 
+        z=[0, 0, 0, 0, 3, 3, 3, 3, 4.5], # Z=Altura e Cumeeira
+        color='steelblue', opacity=0.6, name='Estrutura Principal'
+    ))
 
-    # BOTÃO 2: ENTRADA DE EVIDÊNCIAS
-    with st.expander("📸 2. ENTRADA DE FOTOS/VÍDEOS", expanded=False):
-        arquivos = st.file_uploader("Subir arquivos da vistoria:", accept_multiple_files=True)
-        if st.button("ANALISAR EVIDÊNCIAS"):
-            st.session_state.fotos_processadas = True
-            st.info("Sofia descrevendo ativos e gerando croquis...")
+    # 2. Zoneamento de Risco (Padrão Michael Mulero)
+    # Piso em Vermelho para indicar área de maior risco
+    fig.add_trace(go.Mesh3d(x=[1, 4, 4, 1], y=[1, 1, 3, 3], z=[0.05]*4, color='red', opacity=0.8))
 
-    st.markdown("---")
-    
-    # BOTÃO 3: RELATÓRIO FINAL
-    if st.button("📄 3. GERAR RELATÓRIO FINAL", type="primary", use_container_width=True):
-        st.session_state.gerar_laudo = True
+    # 3. Plotagem de Ativos de Segurança
+    fig.add_trace(go.Scatter3d(
+        x=[1.5, 3.5, 2.5], y=[1.5, 2.5, 4], z=[0.1, 0.1, 4.6],
+        mode='markers+text',
+        marker=dict(size=10, color='black', symbol='diamond'),
+        text=["<b>[RTI]</b>", "<b>[QGBT]</b>", "<b>[SPDA]</b>"],
+        textposition="top center"
+    ))
 
-    if st.button("♻️ LIMPAR TELA / NOVO RISCO", use_container_width=True):
-        st.session_state.clear()
-        st.rerun()
+    fig.update_layout(
+        scene=dict(xaxis=dict(visible=False), yaxis=dict(visible=False), zaxis=dict(visible=False),
+        camera=dict(eye=dict(x=1.8, y=1.8, z=1.5))),
+        margin=dict(l=0, r=0, b=0, t=0), height=600
+    )
+    return fig
 
-# --- TELA PRINCIPAL ORGANIZADA ---
-tab1, tab2, tab3 = st.tabs(["📝 INFO DO RISCO", "📐 CROQUIS HD", "📄 PARECER TÉCNICO"])
-
-with tab1:
-    st.subheader("📋 Dados Extraídos do Pedido")
-    col1, col2 = st.columns(2)
-    with col1:
-        # Preenchimento automático vindo do Botão 1
-        st.text_input("CNPJ ou CPF:", value=st.session_state.dados_pedido.get("doc", ""))
-        st.selectbox("Tipo de Risco:", ["Indústria", "Comércio", "Shopping", "Logística", "Residencial", "Social"], 
-                     index=0 if st.session_state.dados_pedido.get("tipo") == "Indústria" else 1)
-    with col2:
-        st.number_input("Número de Funcionários:", step=1)
-        st.text_area("O que rola lá? (Processo Operacional):")
-
-with tab2:
-    if st.session_state.fotos_processadas:
-        st.subheader("📐 Infografia Isométrica Forense")
-        # Renderização dos Croquis de Alto Padrão (Indústria a Barraco)
-        st.write("Exibindo 6 pranchas técnicas isométricas...")
-        fig = go.Figure(go.Mesh3d(x=[1, 5, 5, 1]*2, y=[1, 1, 6, 6]*2, z=[0]*4+[3]*4, color='red', opacity=0.5))
-        st.plotly_chart(fig, use_container_width=True)
-
-with tab3:
-    if st.session_state.get('gerar_laudo'):
-        st.subheader("📝 Veredito de Michael Giovanni Mulero")
-        st.text_area("Texto Final de Aprovação/Reprovação:", height=300)
-        st.radio("Conclusão:", ["APROVADO", "APROVADO COM RECOMENDAÇÕES", "REPROVADO"], horizontal=True)
+# Interface de Exibição
+st.title("🛡️ Demonstração de Infografia Forense")
+st.markdown("---")
+st.plotly_chart(gerar_amostra_isometrica(), use_container_width=True)
+st.info("Nota: Este modelo integra a volumetria industrial com a localização georreferenciada em Ibiporã/PR.")
