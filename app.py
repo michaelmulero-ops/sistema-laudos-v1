@@ -21,14 +21,14 @@ st.markdown("""
 # 2. Função de Geointeligência e Zoom
 def aplicar_zoom_tecnico(img_input, x, y):
     width, height = img_input.size
-    # Define a área da 'lupa' técnica
+    # Define a área da 'lupa' técnica (Ajustado para o seu padrão de 3cm)
     caixa = (max(0, x-200), max(0, y-200), min(width, x+200), min(height, y+200))
     zoom = img_input.crop(caixa).resize((600, 600), Image.LANCZOS)
     # Moldura de impacto estilo 'Verdade Sem Filtro'
     zoom = ImageOps.expand(zoom, border=15, fill='red')
     return zoom
 
-# 3. Interface Principal (Conforme image_4e1cf9.png)
+# 3. Interface Principal (Conforme seu print atual)
 st.title("🛡️ Sistema de Laudos V1 - Michael Mulero")
 st.write("Geointeligência aplicada a inspeções de risco e segurança.")
 
