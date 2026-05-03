@@ -1,50 +1,48 @@
 import streamlit as st
 import plotly.graph_objects as go
+import folium
+from streamlit_folium import folium_static
 
-def gerar_ar_3d(tipo_risco):
-    """Gera um modelo 3D interativo para visualização de perícia"""
+def gerar_croqui_seguranca_entorno(tipo_mapeamento):
+    """Gera visualização técnica de riscos externos (Aerovias, Rios e Acessos)"""
     fig = go.Figure()
+    
+    # Simulação de camadas de geoprocessamento
+    if "Aviões" in tipo_mapeamento:
+        # Rota de Aproximação (Cone de pouso/decolagem)
+        fig.add_trace(go.Scatter(x=[0, 10], y=[0, 5], mode='lines', 
+                                 line=dict(color='yellow', width=10, dash='dot'), name='Aerovia Londrina/Ibiporã'))
+        fig.add_annotation(x=5, y=3, text="✈️ Rota de Baixa Altitude", showarrow=True)
+    
+    elif "Rios" in tipo_mapeamento:
+        # Mapeamento de Hidrografia e APP (Área de Preservação)
+        fig.add_trace(go.Scatter(x=[0, 2, 5, 8, 10], y=[2, 3, 2, 4, 3], 
+                                 fill='toself', color='blue', name='Corpo d\'Água / Rio'))
+        fig.add_annotation(x=5, y=2, text="🌊 Risco de Inundação/APP", showarrow=False)
 
-    # Define a volumetria baseada no seu padrão de inspeção (Ex: Formato H)
-    if "H" in tipo_risco:
-        # Coordenadas do polígono em H
-        x = [1, 2, 2, 3, 3, 4, 4, 3, 3, 2, 2, 1, 1]
-        y = [1, 1, 2, 2, 1, 1, 4, 4, 3, 3, 4, 4, 1]
-        z = [0] * 13
-        h = 1.5  # Altura do pé direito
-    else:
-        # Bloco comercial padrão
-        x, y = [1, 4, 4, 1, 1], [1, 1, 4, 4, 1]
-        z, h = [0] * 5, 1.2
+    # Localização do Imóvel (O Alvo da Inspeção)
+    fig.add_trace(go.Scatter(x=[5], y=[5], mode='markers+text', 
+                             marker=dict(size=15, color='red', symbol='square'),
+                             text=["📍 Imóvel Inspecionado"], textposition="top center"))
 
-    # Renderiza as paredes (Realidade Volumétrica)
-    fig.add_trace(go.Mesh3d(
-        x=x*2, y=y*2, z=z + [h]*len(z), 
-        color='lightblue', opacity=0.5, name='Estrutura 3D'
-    ))
-
-    # Marcação de Risco (Ex: Ponto Crítico de Infiltração ou Elétrica)
-    fig.add_trace(go.Scatter3d(
-        x=[2.5], y=[2.5], z=[h],
-        mode='markers+text',
-        marker=dict(size=10, color='red', symbol='diamond'),
-        text=["🔴 RISCO CRÍTICO"],
-        name='Alerta Sofia'
-    ))
-
-    fig.update_layout(
-        margin=dict(l=0, r=0, b=0, t=30),
-        scene=dict(xaxis_title='X (m)', yaxis_title='Y (m)', zaxis_title='Z (m)'),
-        height=500
-    )
+    fig.update_layout(title=f"Análise de Entorno: {tipo_mapeamento}", 
+                      xaxis_title="Distância (km)", yaxis_title="Distância (km)",
+                      template="plotly_white", height=400)
     return fig
 
-# Interface do Sistema
-st.header("📐 Inspeção em Realidade Aumentada 3D")
-st.write("Interaja com o modelo para explorar as vulnerabilidades detectadas em Ibiporã.")
+# --- Interface Michael Mulero ---
+st.divider()
+st.header("📐 Croquis de Localização e Segurança Perimetral")
+st.write("Análise macro do risco: Impactos de aerovias, hidrografia e acessos logísticos em Ibiporã/PR.")
 
-escolha = st.selectbox("Selecione o Croqui para Visualização:", 
-                      ["Planta Baixa (Formato H)", "Área Operacional", "Implantação Geral"])
+col_entorno1, col_entorno2 = st.columns(2)
 
-# Renderização do gráfico interativo
-st.plotly_chart(gerar_ar_3d(escolha), use_container_width=True)
+with col_entorno1:
+    st.subheader("✈️ Espaço Aéreo e Logística")
+    st.plotly_chart(gerar_croqui_seguranca_entorno("Rota de Aviões"), use_container_width=True)
+    st.info("Verificação de zona de ruído e riscos de queda de objetos/aeronaves conforme proximidade com aeródromo.")
+
+with col_entorno2:
+    st.subheader("🌊 Hidrografia e Relevo")
+    st.plotly_chart(gerar_croqui_seguranca_entorno("Rios e Escoamento"), use_container_width=True)
+    st.warning("Análise de proximidade com rios para verificação de risco de inundação e conformidade ambiental.")
