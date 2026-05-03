@@ -1,38 +1,25 @@
 import streamlit as st
-from streamlit_drawable_canvas import st_canvas
-from PIL import Image
+from streamlit_webrtc import webrtc_streamer
+import av
 
-st.header("🛡️ Mapa de Blindagem e Croqui de Risco")
-st.write("Desenhe sobre a imagem para definir as zonas de blindagem e os pontos de vulnerabilidade.")
+st.header("🕶️ Croqui em Realidade Aumentada (RA)")
+st.write("Sobreponha o croqui técnico e a blindagem à visão da câmera em tempo real.")
 
-# 1. Seleção da Base (Satélite ou Planta)
-base_mapa = st.file_uploader("Carregue o Mapa de Satélite/Planta do Imóvel:", type=["png", "jpg"])
-
-if base_mapa:
-    img_base = Image.open(base_mapa)
+# 1. Ativação da Câmera com Filtro de RA
+def video_frame_callback(frame):
+    img = frame.to_ndarray(format="bgr24")
     
-    # 2. Ferramenta de Desenho Técnico
-    # 'polygon' para formatos H e limites de terreno
-    # 'rect' para zonas de blindagem específicas
-    modo = st.sidebar.radio("Ferramenta:", ("Contorno da Edificação (H/L)", "Zona de Blindagem (Retângulo)"))
-    drawing_mode = "polygon" if modo == "Contorno da Edificação (H/L)" else "rect"
+    # Aqui a IA desenha a 'camada' de RA sobre o vídeo
+    # Exemplo: Linhas de limite de terreno ou zonas de blindagem
+    # Vamos adicionar uma moldura técnica de auditoria
+    height, width, _ = img.shape
+    # Desenha o contorno da zona de blindagem (exemplo visual)
+    img[50:height-50, 50:50+5] = [0, 0, 255] # Linha guia lateral
+    
+    return av.VideoFrame.from_ndarray(img, format="bgr24")
 
-    canvas_blindagem = st_canvas(
-        fill_color="rgba(0, 255, 0, 0.2)",  # Verde para blindagem OK
-        stroke_width=2,
-        stroke_color="#ff0000", # Vermelho para delimitação de risco
-        background_image=img_base,
-        update_streamlit=True,
-        height=img_base.height * (700 / img_base.width),
-        width=700,
-        drawing_mode=drawing_mode,
-        key="canvas_blindagem_tecnica",
-    )
-
-    # 3. Legenda Automática para o Laudo
-    if canvas_blindagem.json_data:
-        st.info("💡 Legenda do Mapa: Verde = Área Protegida | Linha Vermelha = Limite de Risco de Impacto")
-        
-        # O sistema já prepara esses dados para o Parecer da Sofia
-        if st.button("🚀 INTEGRAR MAPA DE BLINDAGEM AO LAUDO"):
-            st.success("✅ Mapa de Blindagem anexado ao processo Michael Mulero.")
+webrtc_streamer(
+    key="RA-Vistoria", 
+    video_frame_callback=video_frame_callback,
+    rtc_configuration={"iceServers": [{"urls": ["stun:stun.l.google.com:19302"]}]}
+)
