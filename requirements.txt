@@ -11,3 +11,5 @@ streamlit-webrtc
 aiortc
 av
 python-docx
+streamlit
+google-generativeai
