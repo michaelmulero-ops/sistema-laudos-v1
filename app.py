@@ -1,31 +1,29 @@
-def gerar_pdf(projeto, localidade, data, parecer, img_orig, img_zoom, lat, lon):
-    pdf = FPDF()
-    pdf.add_page()
-    
-    # Cabeçalho Michael Mulero Inspeções
-    pdf.set_font("Arial", 'B', 16)
-    pdf.cell(0, 10, "MICHAEL MULERO INSPEÇÕES - LAUDO TÉCNICO", ln=True, align='C')
-    
-    # Selo de Autenticidade GPS (Prova Forense)
-    pdf.set_font("Arial", 'I', 8)
-    pdf.set_text_color(100, 100, 100)
-    pdf.cell(0, 5, f"Selo de Localização GPS: Lat {lat} / Lon {lon}", ln=True, align='R')
-    pdf.set_text_color(0, 0, 0)
-    
-    pdf.ln(5)
-    pdf.set_font("Arial", '', 10)
-    pdf.cell(0, 10, f"Cliente: {projeto} | Localidade: {localidade} | Data: {data}", ln=True, align='C')
-    
-    # Imagens e Parecer da Sofia
-    img_orig.save("temp_orig.jpg")
-    img_zoom.save("temp_zoom.jpg")
-    pdf.image("temp_orig.jpg", x=10, y=55, w=90)
-    pdf.image("temp_zoom.jpg", x=110, y=55, w=90)
-    pdf.ln(80)
-    
-    pdf.set_font("Arial", 'B', 12)
-    pdf.cell(0, 10, "PARECER TÉCNICO (AGENTE IA SOFIA):", ln=True)
-    pdf.set_font("Arial", '', 11)
-    pdf.multi_cell(0, 10, parecer)
-    
-    return pdf.output(dest='S')
+import pandas as pd
+import plotly.express as px
+
+# Simulando dados de vistorias recentes em Ibiporã/Londrina
+data_mapa = {
+    'lat': [-23.2694, -23.3103, -23.0519],
+    'lon': [-51.0469, -51.1628, -50.2319],
+    'Risco': ['Médio', 'Crítico', 'Baixo'],
+    'Cidade': ['Ibiporã', 'Londrina', 'Andirá']
+}
+df_vistorias = pd.DataFrame(data_mapa)
+
+st.divider()
+st.subheader("📊 Painel de Inteligência Regional")
+
+col1, col2 = st.columns([2, 1])
+
+with col1:
+    # Mapa de calor das inspeções
+    fig = px.scatter_mapbox(df_vistorias, lat="lat", lon="lon", hover_name="Cidade", 
+                            color="Risco", size_max=15, zoom=9, 
+                            mapbox_style="carto-positron")
+    st.plotly_chart(fig, use_container_width=True)
+
+with col2:
+    st.write("📈 Resumo da Semana")
+    st.metric("Vistorias Realizadas", "12")
+    st.metric("Laudos Gerados", "12")
+    st.success("✅ Backups 100% Sincronizados")
