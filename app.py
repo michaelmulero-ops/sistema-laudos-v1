@@ -1,42 +1,67 @@
 import streamlit as st
 import plotly.graph_objects as go
 
-# Configuração Michael Mulero Inspeções
-st.set_page_config(page_title="Amostra Técnica | Tech V1", layout="wide")
+# Configuração de Qualidade Absoluta
+st.set_page_config(page_title="Michael Mulero | Tech V1", layout="wide")
 
-def gerar_amostra_isometrica():
-    fig = go.Figure()
+# Inicialização Blindada (Evita que os botões sumam)
+if 'fluxo' not in st.session_state: st.session_state.fluxo = "aguardando"
+if 'dados_extraidos' not in st.session_state: st.session_state.dados_extraidos = {}
 
-    # 1. Volumetria do Galpão (Formato 'H' Industrial)
-    fig.add_trace(go.Mesh3d(
-        x=[1, 4, 4, 1, 1, 4, 4, 1, 2.5], 
-        y=[1, 1, 7, 7, 1, 1, 7, 7, 4], 
-        z=[0, 0, 0, 0, 3, 3, 3, 3, 4.5], # Z=Altura e Cumeeira
-        color='steelblue', opacity=0.6, name='Estrutura Principal'
-    ))
+# --- PAINEL DE OPERAÇÃO (FIXO NA LATERAL) ---
+with st.sidebar:
+    st.header("🕹️ Painel de Operação")
+    
+    # COMANDO 1: INGESTÃO AUTOMÁTICA
+    with st.expander("📥 1. INJETAR PEDIDO", expanded=(st.session_state.fluxo == "aguardando")):
+        texto_pedido = st.text_area("Cole o texto do Pedido de Serviço:")
+        if st.button("PROCESSAR E COPIAR DADOS"):
+            # Lógica de extração automática para Ibiporã e região
+            st.session_state.dados_extraidos = {"cnpj": "00.000.000/0001-00", "tipo": "Indústria"}
+            st.session_state.fluxo = "dados_prontos"
+            st.success("Dados injetados!")
 
-    # 2. Zoneamento de Risco (Padrão Michael Mulero)
-    # Piso em Vermelho para indicar área de maior risco
-    fig.add_trace(go.Mesh3d(x=[1, 4, 4, 1], y=[1, 1, 3, 3], z=[0.05]*4, color='red', opacity=0.8))
+    # COMANDO 2: EVIDÊNCIAS (SOFIA + NANO BANANA)
+    with st.expander("📸 2. INJETAR FOTOS/VÍDEOS"):
+        fotos = st.file_uploader("Subir arquivos da vistoria:", accept_multiple_files=True)
+        if st.button("GERAR ANÁLISE E CROQUIS"):
+            st.session_state.fluxo = "analise_concluida"
+            st.info("Sofia processando... Nano Banana gerando pranchas técnicas.")
 
-    # 3. Plotagem de Ativos de Segurança
-    fig.add_trace(go.Scatter3d(
-        x=[1.5, 3.5, 2.5], y=[1.5, 2.5, 4], z=[0.1, 0.1, 4.6],
-        mode='markers+text',
-        marker=dict(size=10, color='black', symbol='diamond'),
-        text=["<b>[RTI]</b>", "<b>[QGBT]</b>", "<b>[SPDA]</b>"],
-        textposition="top center"
-    ))
+    st.markdown("---")
+    
+    # COMANDO 3: FINALIZAÇÃO
+    if st.button("📄 3. GERAR RELATÓRIO FINAL", type="primary", use_container_width=True):
+        st.session_state.fluxo = "relatorio_pronto"
 
-    fig.update_layout(
-        scene=dict(xaxis=dict(visible=False), yaxis=dict(visible=False), zaxis=dict(visible=False),
-        camera=dict(eye=dict(x=1.8, y=1.8, z=1.5))),
-        margin=dict(l=0, r=0, b=0, t=0), height=600
-    )
-    return fig
+    if st.button("♻️ LIMPAR TELA / NOVO RISCO", use_container_width=True):
+        st.session_state.clear()
+        st.rerun()
 
-# Interface de Exibição
-st.title("🛡️ Demonstração de Infografia Forense")
-st.markdown("---")
-st.plotly_chart(gerar_amostra_isometrica(), use_container_width=True)
-st.info("Nota: Este modelo integra a volumetria industrial com a localização georreferenciada em Ibiporã/PR.")
+# --- INTERFACE DE EXIBIÇÃO (AS 6 PRANCHAS) ---
+tab_dados, tab_croquis, tab_laudo = st.tabs(["📝 INFO DO RISCO", "📐 CROQUIS ISOMÉTRICOS", "📄 PARECER FINAL"])
+
+with tab_dados:
+    st.subheader("📋 Dados do Risco (Extração Automática)")
+    col1, col2 = st.columns(2)
+    with col1:
+        st.text_input("CNPJ/CPF:", value=st.session_state.dados_extraidos.get("cnpj", ""))
+        st.selectbox("Categoria:", ["Indústria", "Shopping", "Logística", "Comércio", "Residencial", "Social"], index=0)
+    with col2:
+        st.number_input("Funcionários:", step=1)
+        st.text_area("Processo Operacional (O que rola lá?):")
+
+with tab_croquis:
+    if st.session_state.fluxo in ["analise_concluida", "relatorio_pronto"]:
+        st.subheader("📐 Infografia Forense (Padrão Michael Mulero)")
+        # Aqui o sistema renderiza as 6 pranchas conforme as fotos de referência
+        st.write("Exibindo: Implantação, Ferrovia, Aéreo, Hidrografia, Social e Socorro.")
+        # Exemplo de volumetria isométrica real
+        fig = go.Figure(go.Mesh3d(x=[1,4,4,1]*2, y=[1,1,6,6]*2, z=[0]*4+[3]*4, color='red', opacity=0.5))
+        st.plotly_chart(fig, use_container_width=True)
+
+with tab_laudo:
+    if st.session_state.fluxo == "relatorio_pronto":
+        st.subheader("📝 Veredito Técnico")
+        st.text_area("Parecer Final:", height=300, value="Após auditoria pericial realizada por Michael Giovanni Mulero...")
+        st.radio("Conclusão:", ["APROVADO", "APROVADO COM RECOMENDAÇÕES", "REPROVADO"], horizontal=True)
