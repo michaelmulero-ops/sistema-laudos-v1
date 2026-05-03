@@ -1,4 +1,4 @@
-import streamlit as st
+iimport streamlit as st
 from PIL import Image, ImageDraw
 from docx import Document # Necessário: pip install python-docx
 import folium
