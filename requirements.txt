@@ -1,6 +1,8 @@
 streamlit
 Pillow
 fpdf2
+pandas
 streamlit-drawable-canvas
 folium
 streamlit-folium
+streamlit-js-eval
