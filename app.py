@@ -1,52 +1,67 @@
 import streamlit as st
+import plotly.graph_objects as go
 
-# Configuração Michael Mulero Inspeções
+# --- CONFIGURAÇÃO DE ELITE ---
 st.set_page_config(page_title="Michael Mulero | Auditoria Tech V1", layout="wide")
 
-# Inicialização de Memória
-if 'dados_injetados' not in st.session_state:
-    st.session_state.dados_injetados = False
+# Inicialização de Memória do Sistema
+if 'etapa_concluida' not in st.session_state:
+    st.session_state.etapa_concluida = False
 
 # --- SIDEBAR: COMANDO CENTRAL ---
 with st.sidebar:
     st.header("🕹️ Painel de Operação")
-    
-    # Botão de Ingestão (Só habilita se houver dados)
+    # Botão de Ingestão de Dados
     btn_injetar = st.button("🚀 INJETAR DADOS NO LAUDO", type="primary", use_container_width=True)
-    
     st.markdown("---")
+    # Botão de Reset
     if st.button("♻️ LIMPAR TELA / NOVO RISCO", use_container_width=True):
         st.session_state.clear()
         st.rerun()
 
 # --- TELA PRINCIPAL: O FLUXO DO JOGO ---
-tab1, tab2, tab3, tab4 = st.tabs(["📥 1. INFO & CONVERSA", "📸 2. FOTOS & ANÁLISE", "📐 3. CROQUIS TÉCNICOS", "📄 4. VEREDITO FINAL"])
+tabs = ["📥 1. INFO & CONVERSA", "📸 2. FOTOS & ANÁLISE", "📐 3. CROQUIS TÉCNICOS", "📄 4. VEREDITO FINAL"]
+tab1, tab2, tab3, tab4 = st.tabs(tabs)
 
 with tab1:
     st.subheader("📋 Entrevista Técnica e Classificação")
     col1, col2 = st.columns(2)
     with col1:
-        st.text_input("CNPJ ou CPF do Risco:", key="doc")
-        st.selectbox("Tipo de Risco:", ["Indústria", "Shopping", "Logística", "Comércio", "Residencial Luxo", "Social"], key="tipo")
+        st.text_input("CNPJ ou CPF do Risco:", key="doc_cliente", placeholder="00.000.000/0001-00")
+        st.selectbox("Tipo de Risco:", 
+                     ["Indústria", "Shopping", "Transportadora Logística", "Comércio", "Residencial Luxo", "Condomínio", "Social"], 
+                     key="categoria_risco")
     with col2:
-        st.number_input("Número de Funcionários:", key="func")
-        st.text_area("O que rola lá? (Processo Operacional):", key="processo")
+        st.number_input("Número de Funcionários:", key="qtd_func", step=1)
+        st.text_area("O que rola lá? (Processo Operacional):", 
+                     key="detalhe_operacional", 
+                     placeholder="Descreva a rotina, o que produzem e como trabalham...")
 
 with tab2:
     st.subheader("⚙️ Análise Sofia: Fotos e Apontamentos")
-    st.file_uploader("Subir Evidências:", accept_multiple_files=True, key="fotos")
-    if st.session_state.fotos:
-        st.success("Sofia analisando ativos e descrevendo pontos críticos...")
+    st.file_uploader("Subir Evidências (Fotos/Vídeos):", accept_multiple_files=True, key="arquivos_vistoria")
+    if st.session_state.arquivos_vistoria:
+        st.info("Sofia processando imagens para identificação de ativos (RTI, SPDA, QGBT)...")
 
 with tab3:
-    if btn_injetar or st.session_state.dados_injetados:
-        st.session_state.dados_injetados = True
-        st.subheader("📐 Infografia Isométrica Forense")
-        st.write("Renderizando 6 pranchas técnicas: Isometria, Entorno, Hidrografia, Segurança...")
-        # Aqui entram os códigos de Plotly 3D que criamos
+    # A lógica de renderização só dispara após a injeção
+    if btn_injetar or st.session_state.etapa_concluida:
+        st.session_state.etapa_concluida = True
+        st.subheader(f"📐 Infografia Isométrica Forense - {st.session_state.categoria_risco}")
+        
+        # Simulação do Croqui Isométrico de Alto Padrão
+        fig = go.Figure(go.Mesh3d(
+            x=[1, 5, 5, 1]*2, y=[1, 1, 6, 6]*2, z=[0]*4+[3]*4, 
+            color='steelblue', opacity=0.6
+        ))
+        fig.update_layout(scene=dict(xaxis=dict(visible=False), yaxis=dict(visible=False), zaxis=dict(visible=False)),
+                          margin=dict(l=0, r=0, b=0, t=0), height=500)
+        st.plotly_chart(fig, use_container_width=True)
+        st.caption("Renderização isométrica com zoneamento de carga de incêndio.")
 
 with tab4:
-    if st.session_state.dados_injetados:
+    if st.session_state.etapa_concluida:
         st.subheader("📝 Parecer Técnico Final")
-        st.text_area("Texto de Conclusão:", value="Após auditoria pericial, o risco apresenta...", height=300)
-        st.radio("Veredito:", ["APROVADO", "APROVADO COM RECOMENDAÇÕES", "REPROVADO"], horizontal=True)
+        texto_default = f"Após auditoria pericial no risco de {st.session_state.categoria_risco}, com {st.session_state.qtd_func} funcionários..."
+        st.text_area("Conclusão do Inspetor:", value=texto_default, height=250)
+        st.radio("Status da Inspeção:", ["APROVADO", "APROVADO COM RECOMENDAÇÕES", "REPROVADO"], horizontal=True)
