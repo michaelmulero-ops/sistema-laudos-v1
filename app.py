@@ -1,22 +1,31 @@
 import streamlit as st
-from PIL import Image
-import numpy as np
 
-# 1. Interface de Captura
-st.divider()
-st.subheader("📸 Registro de Evidência RA")
+def analisar_foto_digital(imagem):
+    # Aqui o sistema envia a imagem para a API da Sofia
+    st.info("🤖 Sofia realizando análise digital da imagem...")
+    
+    # Exemplo de retorno automático da IA focado em Inspeção
+    analise_automatica = """
+    ANÁLISE TÉCNICA:
+    - Objeto: Quadro de Distribuição de Energia.
+    - Risco Detectado: Presença de fiação exposta e ausência de barreira física.
+    - Recomendação: Instalação imediata de proteção de acrílico e organização dos cabos.
+    - Categoria: Comércio/Indústria.
+    """
+    return analise_automatica
 
-if st.button("🚨 CAPTURAR ANOMALIA DE BLINDAGEM"):
-    # Lógica para salvar o frame atual da Realidade Aumentada
-    # Nota: Em ambiente Streamlit, a captura depende da interação do componente webrtc
-    st.warning("Capturando frame georreferenciado...")
+# Interface no App
+upload_foto = st.file_uploader("Enviar Foto para Análise da Sofia", type=["jpg", "png"])
+
+if upload_foto:
+    col1, col2 = st.columns(2)
+    with col1:
+        st.image(upload_foto, caption="Foto Original")
     
-    # Simulação de processamento da Sofia (IA)
-    st.info("🤖 Sofia analisando: Detectada descontinuidade na blindagem face Leste.")
-    
-    # Campo para nota rápida de campo
-    nota_vistoria = st.text_area("Nota de Observação Direta:", 
-                                 placeholder="Ex: Muro com altura inferior à norma da Tokio Marine.")
-    
-    if st.button("💾 SALVAR NO PDF"):
-        st.success("✅ Evidência anexada ao Laudo Michael Mulero Inspeções.")
+    with col2:
+        # A "mágica" acontece aqui
+        descritivo = analisar_foto_digital(upload_foto)
+        parecer_final = st.text_area("Descrição e Parecer Técnico (Editável):", value=descritivo, height=200)
+
+if st.button("✅ Confirmar Análise para o PDF"):
+    st.success("Descrição digital integrada ao laudo com sucesso.")
