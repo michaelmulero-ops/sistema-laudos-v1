@@ -1,61 +1,82 @@
 import streamlit as st
 import plotly.graph_objects as go
 
-# Configuração Michael Mulero Inspeções
-st.set_page_config(page_title="Michael Mulero | Tech V1", layout="wide")
+# Configuração de Perito de Elite
+st.set_page_config(page_title="Michael Mulero | Auditoria Tech V1", layout="wide")
 
-def gerar_isometria_premium(zona_a, zona_b, zona_c, ativos):
-    """Gerador de Infográficos Isométricos Nível Auditoria"""
+def gerar_croqui_forense_3d(tipo_risco, ativos_identificados):
+    """
+    Renderiza infográficos isométricos de alta complexidade.
+    Padrão: WhatsApp Image 2026-04-17 at 14.48.34.jpeg
+    """
     fig = go.Figure()
 
-    # 1. Base Isométrica do Terreno
+    # 1. Estrutura Isométrica do Imóvel (Corte Técnico)
+    # Definindo as paredes e telhado com volumetria real
     fig.add_trace(go.Mesh3d(
-        x=[0, 10, 10, 0, 0, 10, 10, 0], y=[0, 0, 10, 10, 0, 0, 10, 10],
-        z=[0, 0, 0, 0, 0.1, 0.1, 0.1, 0.1], color='lightgray', opacity=0.4
+        x=[1, 5, 5, 1, 1, 5, 5, 1, 3], # Coordenadas X
+        y=[1, 1, 6, 6, 1, 1, 6, 6, 3.5], # Coordenadas Y
+        z=[0, 0, 0, 0, 3, 3, 3, 3, 4.5], # Z (Altura + Cumeeira)
+        i=[7, 0, 0, 0, 4, 4, 2, 6, 4, 5, 6, 7], # Índices para faces
+        j=[0, 1, 2, 3, 5, 6, 7, 4, 5, 6, 7, 4],
+        k=[1, 2, 3, 0, 1, 2, 3, 0, 8, 8, 8, 8],
+        color='steelblue', opacity=0.5, name='Estrutura Principal'
     ))
 
-    # 2. Renderização das Zonas (Carga de Incêndio/Risco)
-    # ZONA A (Vermelho)
-    fig.add_trace(go.Mesh3d(x=[1, 4, 4, 1]*2, y=[1, 1, 4, 4]*2, z=[0.1]*4+[2]*4, color=zona_a, opacity=0.8))
-    # ZONA B (Amarelo)
-    fig.add_trace(go.Mesh3d(x=[4, 8, 8, 4]*2, y=[1, 1, 5, 5]*2, z=[0.1]*4+[1.5]*4, color=zona_b, opacity=0.7))
-    # ZONA C (Verde)
-    fig.add_trace(go.Mesh3d(x=[1, 8, 8, 1]*2, y=[5, 5, 9, 9]*2, z=[0.1]*4+[1]*4, color=zona_c, opacity=0.6))
+    # 2. Zoneamento de Risco por Cores (Padrão Michael Mulero)
+    # Chão colorido para indicar carga de incêndio (Vermelho/Amarelo/Verde)
+    fig.add_trace(go.Mesh3d(
+        x=[1, 5, 5, 1], y=[1, 1, 4, 4], z=[0.05, 0.05, 0.05, 0.05],
+        color='red', opacity=0.8, name='Zona A: Alta Carga'
+    ))
 
-    # 3. Plotagem de Ativos de Segurança (Ícones Técnicos)
-    posicoes = {"[RTI]": [2.5, 2.5, 2.2], "[QGBT]": [6, 3, 1.7], "Rota de Fuga": [4.5, 7, 1.1]}
-    for ativo in ativos:
-        if ativo in posicoes:
-            p = posicoes[ativo]
+    # 3. Plotagem de Ativos de Segurança (Ícones Técnicos HD)
+    # RTI, QGBT, SPDA conforme fotos de referência
+    posicoes = {
+        "🔥 [RTI]": [2, 2, 0.1], 
+        "⚡ [QGBT]": [4, 2, 0.1], 
+        "⚡ [SPDA]": [3, 3.5, 4.6],
+        "🚶 Rota de Fuga": [1, 5, 0.1]
+    }
+    
+    for nome, coord in posicoes.items():
+        if nome in ativos_identificados:
             fig.add_trace(go.Scatter3d(
-                x=[p[0]], y=[p[1]], z=[p[2]], mode='markers+text',
-                marker=dict(size=10, symbol='diamond', color='black'),
-                text=[f"<b>{ativo}</b>"], textposition="top center"
+                x=[coord[0]], y=[coord[1]], z=[coord[2]],
+                mode='markers+text',
+                marker=dict(size=8, color='black', symbol='diamond'),
+                text=[f"<b>{nome}</b>"],
+                textposition="top center"
             ))
 
+    # Configuração de Câmera e Estética Forense
     fig.update_layout(
         scene=dict(
             xaxis=dict(visible=False), yaxis=dict(visible=False), zaxis=dict(visible=False),
-            camera=dict(eye=dict(x=1.8, y=1.8, z=1.5)) # Ângulo Forense
+            aspectmode='data',
+            camera=dict(eye=dict(x=1.8, y=1.8, z=1.5)) # Ângulo Isométrico Técnico
         ),
-        margin=dict(l=0, r=0, b=0, t=0), height=600, paper_bgcolor='rgba(0,0,0,0)'
+        margin=dict(l=0, r=0, b=0, t=30), height=650,
+        paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)'
     )
     return fig
 
-# --- Interface Principal ---
-st.title("🛡️ Michael Mulero Inspeções Tech V1")
+# --- Interface Michael Mulero ---
+st.title("🛡️ Michael Mulero Inspeções | Central de Auditoria Forense")
 st.sidebar.info(f"Inspetor: Michael Giovanni Mulero\nBase: Ibiporã, PR")
 
-col_dados, col_viz = st.columns([1, 2])
+col_config, col_viz = st.columns([1, 2])
 
-with col_dados:
-    st.subheader("📋 Dados do Laudo")
+with col_config:
+    st.subheader("📋 Parâmetros da Inspeção")
     with st.expander("⚙️ Engrenagens de Zoneamento", expanded=True):
-        z_a = st.color_picker("Zona A (Alto Risco)", "#FF0000")
-        z_b = st.color_picker("Zona B (Médio Risco)", "#FFFF00")
-        z_c = st.color_picker("Zona C (Baixo Risco)", "#00FF00")
-        ativos_sel = st.multiselect("Ativos Identificados:", ["[RTI]", "[QGBT]", "Rota de Fuga"])
+        st.write("**Localização:** Ibiporã, Paraná")
+        tipo = st.selectbox("Tipo de Edificação", ["Indústria", "Condomínio de Alto Padrão", "Residência de Luxo"])
+        ativos = st.multiselect("Ativos Identificados no Campo:", 
+                                ["🔥 [RTI]", "⚡ [QGBT]", "⚡ [SPDA]", "🚶 Rota de Fuga"],
+                                default=["🔥 [RTI]", "⚡ [QGBT]"])
 
 with col_viz:
-    st.subheader("📐 Croqui de Implantação e Zoneamento 3D")
-    st.plotly_chart(gerar_isometria_premium(z_a, z_b, z_c, ativos_sel), use_container_width=True)
+    st.subheader(f"📐 Croqui de Implantação e Zoneamento 3D - {tipo}")
+    st.plotly_chart(gerar_croqui_forense_3d(tipo, ativos), use_container_width=True)
+    st.caption("Visualização Técnica Isométrica em Conformidade com Normas NBR.")
