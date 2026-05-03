@@ -1,18 +1,7 @@
-# Verificação se há arquivos e dados para analisar
-if st.button("🚀 GERAR ANÁLISE E PARECER FINAL"):
-    if uploaded_files and processo_operacional:
-        with st.spinner('Analisando imagens e gerando parecer técnico...'):
-            try:
-                # Aqui chamamos a lógica que enviamos para a IA
-                # Certifique-se de que a função 'gerar_parecer' use sua API Key
-                resultado = seu_modulo_ia.analisar_vistorias(
-                    categoria=categoria,
-                    processo=processo_operacional,
-                    arquivos=uploaded_files
-                )
-                st.success("Análise concluída!")
-                st.write(resultado)
-            except Exception as e:
-                st.error(f"Erro na análise: {e}")
-    else:
-        st.warning("Ei, Michael! Adicione as fotos e a descrição do processo antes de analisar.")
+import streamlit as st  # <-- ESSA LINHA PRECISA SER A PRIMEIRA
+import google.generativeai as genai
+
+# O restante do seu código (configurações de página, títulos, etc) vem aqui...
+
+# O botão que te passei deve ficar mais para baixo, 
+# depois que você já definiu as variáveis de upload.
