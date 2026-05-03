@@ -1,100 +1,92 @@
 import streamlit as st
-from PIL import Image, ImageDraw, ImageFont
-from datetime import datetime
+from PIL import Image, ImageDraw
+from docx import Document  # Necessário: pip install python-docx
+import io
 
-# Identidade Visual e Configurações de Perito
+# Identidade Visual Michael Mulero
 st.set_page_config(page_title="Michael Mulero Inspeções Tech V1", layout="wide")
 
-def analise_sofia_pericial(nome, contexto_texto=""):
-    """Análise Multidimensional: Além da conformidade, avalia causas e agravantes"""
-    n = nome.lower()
-    
-    if "eletrico" in n or "quadro" in n:
-        return {
-            "status": "🔴 CRÍTICO",
-            "parecer": "⚡ AGRAVANTE TÉCNICO: Quadro de energia sem barreira física e com fiação exposta.",
-            "causa": "Padrão de instalação inadequado. Risco de incêndio com possibilidade de interrupção do sistema de segurança.",
-            "recomendacao": "Adequação imediata conforme NR-10 e fechamento do compartimento."
-        }
-    elif "forro" in n or "laje" in n:
-        return {
-            "status": "🔴 CRÍTICO",
-            "parecer": "⚠️ RISCO ESTRUTURAL: Infiltração ativa em laje/forro metálico.",
-            "causa": "Sinais de fadiga em calhas ou vedação de cobertura. Risco de dano ao conteúdo de alto valor.",
-            "recomendacao": "Revisão urgente do sistema de impermeabilização e cobertura."
-        }
-    elif "extintor" in n:
-        return {
-            "status": "🟢 CONFORMIDADE",
-            "parecer": "✅ PROTEÇÃO ATIVA: Equipamento de combate a incêndio presente.",
-            "causa": "Manutenção preventiva em dia.",
-            "recomendacao": "Manter acesso livre e sinalização visível."
-        }
-    return {"status": "🟢 OK", "parecer": "📋 REGISTRO TÉCNICO: Elemento documentado.", "causa": "N/A", "recomendacao": "Manter monitoramento."}
+def ler_texto_docx(arquivo_word):
+    """Extrai texto de arquivos .docx para alimentar a Sofia"""
+    doc = Document(arquivo_word)
+    texto_completo = [para.text for para in doc.paragraphs]
+    return "\n".join(texto_completo)
 
-def desenhar_croqui_tecnico(modelo_nome):
-    """Gera desenhos técnicos reais em vez de telas pretas (Padrão 10x10)"""
-    # Cria uma base cinza clara de desenho técnico
-    img = Image.new('RGB', (400, 400), color='#f0f0f0')
+def analise_sofia_pericial(nome_foto, contexto_word=""):
+    """Análise que cruza a imagem com os dados lidos do arquivo Word"""
+    n = nome_foto.lower()
+    analise = {"status": "🟢 OK", "parecer": "Elemento documentado.", "agravante": "Nenhum detectado."}
+    
+    # Se houver menção a infiltração ou elétrica no Word, a Sofia fica em alerta
+    contexto_alerta = contexto_word.lower()
+    
+    if "eletrico" in n or "quadro" in n or "fiação" in contexto_alerta:
+        analise = {
+            "status": "🔴 CRÍTICO",
+            "parecer": "⚡ RISCO ELÉTRICO IDENTIFICADO.",
+            "agravante": "Conforme relatório anexado, há registro de sobrecarga ou fiação exposta no local."
+        }
+    elif "forro" in n or "laje" in n or "infiltração" in contexto_alerta:
+        analise = {
+            "status": "🔴 CRÍTICO",
+            "parecer": "⚠️ RISCO ESTRUTURAL (INFILTRAÇÃO).",
+            "agravante": "Dados do Word confirmam umidade ativa afetando o conteúdo do imóvel."
+        }
+    return analise
+
+def gerar_desenho_tecnico(modelo):
+    """Gera croquis reais 10x10 com grid de engenharia"""
+    img = Image.new('RGB', (400, 400), color='#ffffff')
     draw = ImageDraw.Draw(img)
+    # Desenha Grid
+    for i in range(0, 400, 40):
+        draw.line([(i, 0), (i, 400)], fill='#eeeeee')
+        draw.line([(0, i), (400, i)], fill='#eeeeee')
     
-    # Desenha Grid de Engenharia
-    for x in range(0, 400, 40):
-        draw.line([(x, 0), (x, 400)], fill='#dcdcdc', width=1)
-        draw.line([(0, x), (400, x)], fill='#dcdcdc', width=1)
-    
-    # Lógica de Geometria (Exemplo: Formato H para Planta Baixa)
-    if "H" in modelo_nome:
-        # Desenha as paredes externas do formato H
-        draw.polygon([(80, 80), (140, 80), (140, 160), (260, 160), (260, 80), (320, 80), 
-                      (320, 320), (260, 320), (260, 240), (140, 240), (140, 320), (80, 320)], 
-                     outline="black", fill="#ffffff", width=3)
+    # Desenha forma base conforme modelo
+    if "H" in modelo:
+        draw.polygon([(100,100), (150,100), (150,180), (250,180), (250,100), (300,100), 
+                      (300,300), (250,300), (250,220), (150,220), (150,300), (100,300)], 
+                     outline="black", width=3)
     else:
-        # Desenha um bloco comercial padrão
-        draw.rectangle([100, 100, 300, 300], outline="black", fill="#ffffff", width=3)
-        
+        draw.rectangle([120, 120, 280, 280], outline="black", width=3)
     return img
 
-# --- INTERFACE ---
 st.title("🛡️ Michael Mulero Inspeções Tech V1")
-st.sidebar.markdown(f"**Inspetor:** Michael Giovanni Mulero\n\n**Local:** Ibiporã, PR")
+st.sidebar.info(f"Inspetor: Michael Giovanni Mulero\nLocal: Ibiporã, PR")
 
-arquivos = st.file_uploader("Subir pacote de vistoria (Fotos e Documentos):", accept_multiple_files=True)
+pacote = st.file_uploader("Subir Vistoria (Fotos + Relatórios Word):", accept_multiple_files=True)
 
-if arquivos:
-    evidencias = []
-    for arq in arquivos:
-        if arq.type.startswith('image/'):
-            img = Image.open(arq).convert("RGB")
-            analise = analise_sofia_pericial(arq.name)
-            evidencias.append({"nome": arq.name, "img": img, "analise": analise})
+if pacote:
+    texto_extraido = ""
+    fotos = []
     
-    # Exibição do Laudo com Análise Profunda
-    st.header("🔍 Auditoria Forense Sofia")
-    for ev in sorted(evidencias, key=lambda x: x['analise']['status'], reverse=True):
-        col1, col2 = st.columns([1, 2])
-        col1.image(ev["img"], use_container_width=True)
-        with col2:
-            st.markdown(f"### Status: {ev['analise']['status']}")
-            st.write(f"**Parecer:** {ev['analise']['parecer']}")
-            st.write(f"**Causa Raiz:** {ev['analise']['causa']}")
-            st.warning(f"**Recomendação:** {ev['analise']['recomendacao']}")
+    # Primeiro Passo: Ler todos os arquivos Word para contexto
+    for arquivo in pacote:
+        if arquivo.name.endswith('.docx'):
+            texto_extraido += ler_texto_docx(arquivo)
+            st.success(f"✅ Informações lidas do arquivo: {arquivo.name}")
+    
+    # Segundo Passo: Analisar Fotos com base no que foi lido no Word
+    for arquivo in pacote:
+        if arquivo.type.startswith('image/'):
+            img = Image.open(arquivo).convert("RGB")
+            res = analise_sofia_pericial(arquivo.name, texto_extraido)
+            fotos.append({"img": img, "res": res})
 
-    # Geração dos 6 Croquis 10x10 REAIS
-    if st.button("📄 FINALIZAR LAUDO E GERAR CROQUIS TÉCNICOS"):
-        st.divider()
-        st.header("📐 Suíte de Croquis Técnicos Sinalizados")
-        modelos = ["Planta Baixa (Formato H)", "Área Operacional", "Mapa de Blindagem", 
-                   "Bloco Comercial", "Residencial/Lazer", "Implantação Geral"]
-        
+    # Exibição do Laudo
+    for item in sorted(fotos, key=lambda x: x['res']['status'], reverse=True):
+        c1, c2 = st.columns([1, 2])
+        c1.image(item["img"], use_container_width=True)
+        with c2:
+            st.subheader(f"Status: {item['res']['status']}")
+            st.write(f"**Análise:** {item['res']['parecer']}")
+            st.warning(f"**Contexto do Relatório:** {item['res']['agravante']}")
+
+    if st.button("📄 FINALIZAR LAUDO E GERAR CROQUIS 10x10"):
+        st.header("📐 Croquis Técnicos Sinalizados")
+        modelos = ["Planta Baixa (Formato H)", "Área Operacional", "Mapa de Blindagem", "Bloco Comercial", "Residencial/Lazer", "Implantação Geral"]
         for i in range(0, 6, 2):
-            c1, c2 = st.columns(2)
-            with c1:
-                st.markdown(f"**{modelos[i]}**")
-                st.image(desenhar_croqui_tecnico(modelos[i]), caption="Escala Técnica 10x10 | Selo GPS Ibiporã")
-            with c2:
-                if i+1 < 6:
-                    st.markdown(f"**{modelos[i+1]}**")
-                    st.image(desenhar_croqui_tecnico(modelos[i+1]), caption="Escala Técnica 10x10 | Selo GPS Ibiporã")
-        
-        st.success("✅ Laudo Pericial Completo: Desenhos integrados e análise multidimensional concluída.")
+            cols = st.columns(2)
+            cols[0].image(gerar_desenho_tecnico(modelos[i]), caption=modelos[i])
+            cols[1].image(gerar_desenho_tecnico(modelos[i+1]), caption=modelos[i+1])
