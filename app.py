@@ -1,31 +1,39 @@
 import streamlit as st
+from PIL import Image
 
-def analisar_foto_digital(imagem):
-    # Aqui o sistema envia a imagem para a API da Sofia
-    st.info("🤖 Sofia realizando análise digital da imagem...")
+st.subheader("📸 Upload de Evidências em Lote")
+
+# Alteração crítica: adicionado o parâmetro accept_multiple_files=True
+fotos_lote = st.file_uploader(
+    "Selecione todas as fotos da vistoria:", 
+    type=["jpg", "png", "jpeg"], 
+    accept_multiple_files=True
+)
+
+if fotos_lote:
+    st.write(f"✅ {len(fotos_lote)} fotos carregadas. Iniciando análise digital...")
     
-    # Exemplo de retorno automático da IA focado em Inspeção
-    analise_automatica = """
-    ANÁLISE TÉCNICA:
-    - Objeto: Quadro de Distribuição de Energia.
-    - Risco Detectado: Presença de fiação exposta e ausência de barreira física.
-    - Recomendação: Instalação imediata de proteção de acrílico e organização dos cabos.
-    - Categoria: Comércio/Indústria.
-    """
-    return analise_automatica
-
-# Interface no App
-upload_foto = st.file_uploader("Enviar Foto para Análise da Sofia", type=["jpg", "png"])
-
-if upload_foto:
-    col1, col2 = st.columns(2)
-    with col1:
-        st.image(upload_foto, caption="Foto Original")
+    # Criando uma grade para visualização e pareceres
+    for foto in fotos_lote:
+        col1, col2 = st.columns([1, 2])
+        
+        with col1:
+            img = Image.open(foto)
+            st.image(img, use_container_width=True)
+            
+        with col2:
+            # A Sofia analisa cada foto do lote automaticamente
+            st.markdown("**Parecer Analítico da Sofia:**")
+            
+            # Aqui simulamos a extração de dados técnicos (OCR e Contexto)
+            analise_sugerida = f"Evidência detectada na foto {foto.name}. " \
+                               "Risco estrutural identificado conforme normas de segurança."
+            
+            # Campo editável para você validar ou alterar rapidamente
+            st.text_area(f"Descrição Técnica - {foto.name}", 
+                         value=analise_sugerida, 
+                         key=f"obs_{foto.name}",
+                         height=100)
     
-    with col2:
-        # A "mágica" acontece aqui
-        descritivo = analisar_foto_digital(upload_foto)
-        parecer_final = st.text_area("Descrição e Parecer Técnico (Editável):", value=descritivo, height=200)
-
-if st.button("✅ Confirmar Análise para o PDF"):
-    st.success("Descrição digital integrada ao laudo com sucesso.")
+    if st.button("🚀 INTEGRAR TODAS AS FOTOS AO LAUDO PDF"):
+        st.success(f"As {len(fotos_lote)} fotos e análises foram consolidadas no relatório.")
