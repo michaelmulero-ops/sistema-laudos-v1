@@ -6,3 +6,4 @@ streamlit-drawable-canvas
 folium
 streamlit-folium
 streamlit-js-eval
+plotly
