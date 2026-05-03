@@ -7,3 +7,5 @@ folium
 streamlit-folium
 streamlit-js-eval
 plotly
+streamlit-webrtc
+av
