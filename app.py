@@ -5,11 +5,12 @@ from PIL import Image
 # 1. IDENTIDADE VISUAL
 st.set_page_config(page_title="S.I.T. - Michael Mulero", layout="wide")
 
-# 2. CONFIGURAÇÃO DA API
+# 2. CONFIGURAÇÃO DA API (Sua chave atualizada)
 API_KEY = "AIzaSyAB6i7YEdIylcmamB3mlV64UlDLyYHlZ-g" 
 genai.configure(api_key=API_KEY)
 
 # 3. DEFINIÇÃO DA INTELIGÊNCIA TÉCNICA
+# O foco continua em D-Limoneno, reatores e os 9 pontos de SPDA
 SYSTEM_PROMPT = """
 Você é o motor de IA do Michael Mulero Inspeções.
 Analise as fotos enviadas e extraia dados para laudos de seguros.
@@ -20,10 +21,10 @@ FOCO TÉCNICO:
 Gere um parágrafo técnico e profissional para o campo 'Processo Operacional'.
 """
 
-# MUDANÇA AQUI: Usando o nome de modelo mais compatível
-model = genai.GenerativeModel('gemini-1.5-flash', system_instruction=SYSTEM_PROMPT)
+# AJUSTE PARA EVITAR O ERRO 404: Nome do modelo sem o prefixo de versão beta
+model = genai.GenerativeModel('gemini-1.5-flash')
 
-# 4. PAINEL DE CONTROLE
+# 4. PAINEL DE CONTROLE (BARRA LATERAL)
 with st.sidebar:
     st.title("🛡️ Filtros de Vistoria")
     categoria = st.selectbox("Selecione o Nível:", [
@@ -45,9 +46,10 @@ if fotos:
         with st.spinner("Extraindo inteligência das imagens..."):
             try:
                 img_list = [Image.open(f) for f in fotos]
-                # Chamada simplificada para evitar erro de versão
+                # Chamada com o prompt de sistema reforçado aqui para garantir a precisão
                 response = model.generate_content([
-                    "Descreva o processo operacional, citando máquinas, inflamáveis e proteções visíveis.", 
+                    SYSTEM_PROMPT, 
+                    "Baseado nas fotos, descreva o processo operacional detalhado:", 
                     *img_list
                 ])
                 processo_texto = response.text
@@ -64,5 +66,4 @@ processo_final = st.text_area(
 )
 
 if st.button("🚀 FINALIZAR E SALVAR"):
-    st.success(f"Vistoria concluída com sucesso!")
-    
+    st.success(f"Vistoria da unidade {cnpj_input} concluída!")
