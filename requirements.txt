@@ -15,3 +15,9 @@ streamlit
 google-generativeai
 streamlit
 google-generativeai
+streamlit
+google-generativeai
+Pillow
+folium
+streamlit-folium
+pandas
