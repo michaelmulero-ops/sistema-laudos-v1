@@ -1,3 +1,4 @@
-# Texto padrão para garantir conformidade técnica
-rodape_tecnico = "\n\n--- \n⚠️ **PADRÃO TÉCNICO MICHAEL MULERO:** \n📍 Orientação: Frente-para-Rua \n🧭 Referência: Norte Magnético Ignorado para clareza do analista."
-st.info(rodape_tecnico)
+# Adicione isto ao final do seu bloco de análise no app.py
+st.markdown("---")
+st.write("### 📋 Conclusão da Análise Técnica")
+st.info("**Padrão Michael Mulero:** Orientação Frente-para-Rua | Norte Magnético Ignorado.")
