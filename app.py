@@ -1,20 +1,17 @@
-from PIL import Image, ImageDraw, ImageFont
+import streamlit as st
 
-def gerar_infografico_localizacao(endereco, cidade, output_path):
-    # Carrega o modelo padrão da Michael Mulero Inspeções
-    template = Image.open('modelo_localizacao_padrao.png')
-    draw = ImageDraw.Draw(template)
-    
-    # Configuração de Fonte (ajuste o caminho da fonte no seu servidor/PC)
-    font_titulo = ImageFont.truetype("Arial_Bold.ttf", 40)
-    
-    # Insere os dados dinâmicos no modelo
-    draw.text((100, 50), f"RISCO: {endereco}", fill="black", font=font_titulo)
-    draw.text((100, 100), f"CIDADE: {cidade}", fill="black", font=font_titulo)
-    
-    # Salva o arquivo final pronto para o laudo
-    template.save(output_path)
-    return output_path
+st.title("Gerador de Laudos - Michael Mulero Inspeções")
 
-# Exemplo de uso rápido
-gerar_infografico_localizacao("Rua Alexander Graham Bell, 255", "Londrina/PR", "anexo_localizacao.png") 
+with st.sidebar:
+    st.header("Dados do Risco")
+    endereco = st.text_input("Endereço Completo", "Rua Alexander Graham Bell, 255")
+    lmi = st.number_input("Importância Segurada (R$)", value=107000000.0)
+    processar = st.button("Gerar Infográficos")
+
+if processar:
+    # Aqui o sistema chama a função de imagem e atualiza os dados
+    img_path = gerar_infografico_localizacao(endereco, "Londrina/PR", "temp_infografico.png")
+    st.image(img_path, caption="Infográfico de Localização Gerado")
+    
+    with open(img_path, "rb") as file:
+        st.download_button("Baixar para o Relatório", file, "infografico_final.png")
