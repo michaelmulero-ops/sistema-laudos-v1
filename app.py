@@ -1,17 +1,15 @@
-import streamlit as st
+# Módulo de Captura Automática - Tech V1
+import google_gemini_vision as gv
 
-st.title("Gerador de Laudos - Michael Mulero Inspeções")
-
-with st.sidebar:
-    st.header("Dados do Risco")
-    endereco = st.text_input("Endereço Completo", "Rua Alexander Graham Bell, 255")
-    lmi = st.number_input("Importância Segurada (R$)", value=107000000.0)
-    processar = st.button("Gerar Infográficos")
-
-if processar:
-    # Aqui o sistema chama a função de imagem e atualiza os dados
-    img_path = gerar_infografico_localizacao(endereco, "Londrina/PR", "temp_infografico.png")
-    st.image(img_path, caption="Infográfico de Localização Gerado")
+def processar_inspecao_live(video_stream):
+    # O Gemini analisa o vídeo e identifica pontos críticos
+    riscos_detectados = gv.analisar_frames(video_stream, "inspecao_seguros")
     
-    with open(img_path, "rb") as file:
-        st.download_button("Baixar para o Relatório", file, "infografico_final.png")
+    for item in riscos_detectados:
+        print(f"Equipamento: {item.nome}")
+        print(f"Estado: {item.condicao}")
+        # Salva automaticamente na pasta do seu relatório
+        item.save_photo(f"vistoria_andira_{item.id}.jpg")
+
+# Iniciando o modo mãos livres
+processar_inspecao_live(camera_celular)
