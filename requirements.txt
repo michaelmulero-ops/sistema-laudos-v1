@@ -21,3 +21,6 @@ Pillow
 folium
 streamlit-folium
 pandas
+streamlit
+google-generativeai
+Pillow
