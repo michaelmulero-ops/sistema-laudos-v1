@@ -1,33 +1,21 @@
-# 1. Instalação das ferramentas necessárias
-!pip install Pillow
+from PIL import Image, ImageDraw
 
-from PIL import Image, ImageDraw, ImageFont
-import os
+# 1. Criar um fundo de teste (simulando seu template)
+img = Image.new('RGB', (800, 400), color = (0, 31, 63)) # Azul escuro padrão
+draw = ImageDraw.Draw(img)
 
-# 2. Configuração dos dados (Extraídos do seu PDF)
-dados_risco = {
-    "cliente": "SERRARIA OURO VERDE LTDA",
-    "endereco": "Av. Vidal Lourenço, 505, Andirá - PR",
-    "lmi_incendio": "R$ 300.000,00",
-    "cobertura_vendaval": "R$ 150.000,00"
-}
+# 2. Dados da Serraria Ouro Verde (Andirá)
+texto_cabecalho = "MICHAEL MULERO INSPECOES - TECH V1"
+cliente = "CLIENTE: SERRARIA OURO VERDE LTDA"
+local = "LOCAL: AV. VIDAL LOURENCO, 505 - ANDIRA/PR"
+lmi = "LMI INCENDIO: R$ 300.000,00"
 
-# 3. Função para gerar o infográfico
-def gerar_infografico_tech_v1(template_path, output_name):
-    try:
-        # Abre a imagem base
-        img = Image.open(template_path)
-        draw = ImageDraw.Draw(img)
-        
-        # Aqui o código escreve os dados na imagem
-        # (Ajustaremos as coordenadas x, y conforme seu template)
-        draw.text((50, 100), f"CLIENTE: {dados_risco['cliente']}", fill="white")
-        draw.text((50, 150), f"LOCAL: {dados_risco['endereco']}", fill="white")
-        
-        img.save(output_name)
-        print(f"✅ Infográfico {output_name} gerado com sucesso!")
-    except Exception as e:
-        print(f"❌ Erro: Certifique-se de que o arquivo {template_path} foi carregado no Colab.")
+# 3. Desenhar no "papel"
+draw.text((20, 20), texto_cabecalho, fill=(255, 255, 255))
+draw.text((20, 100), cliente, fill=(255, 255, 0)) # Amarelo para destaque
+draw.text((20, 140), local, fill=(255, 255, 255))
+draw.text((20, 180), lmi, fill=(255, 255, 255))
 
-# Executar (Troque 'template.png' pelo nome do seu arquivo carregado)
-gerar_infografico_tech_v1('seu_template_original.png', 'Relatorio_Andira_Final.png')
+# 4. Salvar e mostrar
+img.save('teste_sistema_v1.png')
+print("✅ Programa operacional! Imagem 'teste_sistema_v1.png' gerada na pasta ao lado.")
