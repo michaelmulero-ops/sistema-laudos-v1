@@ -24,3 +24,7 @@ pandas
 streamlit
 google-generativeai
 Pillow
+streamlit
+numpy
+opencv-python-headless
+google-generativeai
