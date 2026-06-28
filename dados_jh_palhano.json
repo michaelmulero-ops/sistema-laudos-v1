@@ -1,0 +1,139 @@
+{
+  "condominio": {
+    "nome": "JH Palhano Residencial",
+    "cnpj": "12.345.678/0001-90",
+    "endereco": "Rua das Flores, 1000",
+    "cidade": "São Paulo",
+    "uf": "SP",
+    "cep": "01310-100",
+    "data_vistoria": "2026-06-28",
+    "inspetor": "Eng. Michael Mulero",
+    "matricula_inspetor": "CREA-12345",
+    "latitude_condominio": -23.5505,
+    "longitude_condominio": -46.6333,
+    "area_terreno_m2": 5000,
+    "area_construida_m2": 3500,
+    "ano_construcao": 2015,
+    "tipo_condominio": "horizontal",
+    "total_unidades": 12,
+    "camada_1_geometria": {
+      "planta_valida": true,
+      "norte_correto": true,
+      "coordenadas_precisao_m": 0.5,
+      "status": "APROVADO"
+    },
+    "camada_2_metadados": {
+      "documentacao_completa": true,
+      "assinatura_inspetor": true,
+      "fotos_evidencia": true,
+      "hash_auditoria": "sha256_abc123def456",
+      "status": "APROVADO"
+    },
+    "camada_3_penalizacoes": {
+      "muro_alvenaria": false,
+      "aceiro_mata_ciliar_30m": false,
+      "hidrantes_distribuidos": true,
+      "spda_atualizado": true,
+      "alarme_incendio": true
+    }
+  },
+  "unidades": [
+    {
+      "id_unidade": "U001",
+      "lote": "Lote 1",
+      "endereco": "Rua das Flores, 1001",
+      "area_m2": 280,
+      "proprietario": "João Silva",
+      "cpf_proprietario": "123.456.789-00",
+      "latitude": -23.5505,
+      "longitude": -46.6333,
+      "tipo_uso": "residencial",
+      "divisao_total_telhado": true,
+      "valvulas_retentoras_inflamaveis": true,
+      "hidrante_interno": true,
+      "saidas_emergencia": 2,
+      "resistencia_fogo_minutos": 60,
+      "camada_1_geometria": {
+        "coordenadas_validas": true,
+        "poligono_renderizado": true,
+        "status": "APROVADO"
+      },
+      "camada_2_metadados": {
+        "documentacao_completa": true,
+        "laudo_preenchido": true,
+        "status": "APROVADO"
+      },
+      "camada_3_penalizacoes": [
+        {
+          "deficiencia": "divisao_total_telhado",
+          "artigo_tsib": "Art. 5º, alínea (a)",
+          "agravamento_percentual": 10,
+          "justificativa": "Presença de divisão total de telhado em compartimento"
+        }
+      ],
+      "premio_base_anual": 5000,
+      "taxa_agravamento": 10,
+      "premio_final": 5500
+    },
+    {
+      "id_unidade": "U002",
+      "lote": "Lote 2",
+      "endereco": "Rua das Flores, 1003",
+      "area_m2": 280,
+      "proprietario": "Maria Santos",
+      "cpf_proprietario": "987.654.321-00",
+      "latitude": -23.5506,
+      "longitude": -46.6334,
+      "tipo_uso": "residencial",
+      "divisao_total_telhado": false,
+      "valvulas_retentoras_inflamaveis": true,
+      "hidrante_interno": true,
+      "saidas_emergencia": 2,
+      "resistencia_fogo_minutos": 60,
+      "camada_1_geometria": {
+        "coordenadas_validas": true,
+        "poligono_renderizado": true,
+        "status": "APROVADO"
+      },
+      "camada_2_metadados": {
+        "documentacao_completa": true,
+        "laudo_preenchido": true,
+        "status": "APROVADO"
+      },
+      "camada_3_penalizacoes": [],
+      "premio_base_anual": 5000,
+      "taxa_agravamento": 0,
+      "premio_final": 5000
+    },
+    {
+      "id_unidade": "U003",
+      "lote": "Lote 3",
+      "endereco": "Rua das Flores, 1005",
+      "area_m2": 280,
+      "proprietario": "Carlos Oliveira",
+      "cpf_proprietario": "456.789.123-00",
+      "latitude": -23.5507,
+      "longitude": -46.6335,
+      "tipo_uso": "residencial",
+      "divisao_total_telhado": false,
+      "valvulas_retentoras_inflamaveis": false,
+      "hidrante_interno": true,
+      "saidas_emergencia": 2,
+      "resistencia_fogo_minutos": 60,
+      "camada_1_geometria": {
+        "coordenadas_validas": true,
+        "poligono_renderizado": true,
+        "status": "APROVADO"
+      },
+      "camada_2_metadados": {
+        "documentacao_completa": true,
+        "laudo_preenchido": true,
+        "status": "APROVADO"
+      },
+      "camada_3_penalizacoes": [],
+      "premio_base_anual": 5000,
+      "taxa_agravamento": 0,
+      "premio_final": 5000
+    }
+  ]
+}
